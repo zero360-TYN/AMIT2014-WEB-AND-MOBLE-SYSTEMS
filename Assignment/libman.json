@@ -1,7 +1,7 @@
 {
   "version": "3.0",
   "defaultProvider": "cdnjs",
-  "defaultDestination": "wwwroot/js/",
+  "defaultDestination": "wwwroot/jsLib/",
   "libraries": [
     {
       "library": "jquery@3.7.1",
