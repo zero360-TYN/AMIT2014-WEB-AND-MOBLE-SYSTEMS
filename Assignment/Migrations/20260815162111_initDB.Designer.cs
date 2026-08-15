@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DB))]
-    [Migration("20260815154500_initDB")]
+    [Migration("20260815162111_initDB")]
     partial class initDB
     {
         /// <inheritdoc />
@@ -90,12 +90,10 @@ namespace Assignment.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BlockBy")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("BlockingReason")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -414,7 +412,7 @@ namespace Assignment.Migrations
             modelBuilder.Entity("Assignment.Models.AccountStatus", b =>
                 {
                     b.HasOne("Assignment.Models.Account", "Account")
-                        .WithOne("Status")
+                        .WithOne("AccountStatus")
                         .HasForeignKey("Assignment.Models.AccountStatus", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -427,25 +425,25 @@ namespace Assignment.Migrations
                     b.HasOne("Assignment.Models.Account", "Account")
                         .WithMany("Bookings")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Assignment.Models.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Assignment.Models.Service", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Assignment.Models.Staff", "Staff")
                         .WithMany("HandledBookings")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Account");
@@ -539,12 +537,12 @@ namespace Assignment.Migrations
                     b.Navigation("AccountDetail")
                         .IsRequired();
 
+                    b.Navigation("AccountStatus")
+                        .IsRequired();
+
                     b.Navigation("Bookings");
 
                     b.Navigation("Staff")
-                        .IsRequired();
-
-                    b.Navigation("Status")
                         .IsRequired();
                 });
 

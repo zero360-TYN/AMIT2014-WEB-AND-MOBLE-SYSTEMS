@@ -31,6 +31,31 @@ public class DB(DbContextOptions options) : DbContext(options)
     //PAYMENT----------------------------------------------------------
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentDetail> PaymentDetails { get; set; }
+    //this is to prevent accidental deletion of related data when a parent entity is deleted
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Staff)
+            .WithMany(s => s.HandledBookings)
+            .HasForeignKey(b => b.StaffId)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Account)
+            .WithMany(a => a.Bookings)
+            .HasForeignKey(b => b.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Service)
+            .WithMany()
+            .HasForeignKey(b => b.ServiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Room)
+            .WithMany()
+            .HasForeignKey(b => b.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }
 //entity class------------------------------------------------------------------------------------------
 public class Role
