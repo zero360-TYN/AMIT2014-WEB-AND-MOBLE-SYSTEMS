@@ -1,0 +1,50 @@
+﻿@using Assignment.Helpers
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "User Management";
+} 
+
+@Html.Button("Export", id: "exportUser")
+
+<div class="roleFilter">
+    <select id="role" class="role">
+        <option value="">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="staff">Staff</option>
+        <option value="user">User</option>
+    </select>
+</div>
+@Html.Input(type : "search", placeholder : "Search")
+
+@Html.Button("Go", type: "submit")
+
+<p>All Users： 0</p>
+<div>
+    <table>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Username</th>
+            <th>Joined Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>Yong Thong</td>
+            <td>yongthong@example.com</td>
+            <td>User</td>
+            <td>yongthong</td>
+            <td>2023-01-01</td>
+            <td>Active</td>
+            <td>
+                @Html.Button("Block")
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+
+
+

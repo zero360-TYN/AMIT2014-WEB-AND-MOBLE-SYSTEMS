@@ -1,0 +1,28 @@
+﻿@using Assignment.Helpers;
+
+@{
+    Layout = "_AuthLayout";  
+    ViewBag.Title = "Login";
+
+}
+
+<h1>Login Your Account</h1>
+<form>
+    <div>
+        <input type="text" id="username" placeholder="Username" maxlength="30" /> <br />
+        <input type="password" id="password" placeholder="Password" /> <br />
+    </div>
+    <div>
+        <a href="/Account/Reset_Password">Forget Password?</a>
+    </div>
+    @Html.Button("Login", type : "submit") <br />
+    <strong>Note: 3 failed attempts will lock out the account for 15 minutes.</strong><br>
+    <a href="/Account/SignIn">
+        @Html.Button("Login with Google", type : "button")
+    </a>
+
+</form>
+
+
+<h1>WELCOME TO <br />POKEMON THERAPY <br />CENTRA!</h1>
+<p>Do you have an account? <a href="/Account/SignUp">Sign Up</a></p>

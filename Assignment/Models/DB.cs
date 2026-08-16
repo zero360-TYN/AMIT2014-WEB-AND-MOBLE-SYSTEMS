@@ -19,6 +19,7 @@ public class DB(DbContextOptions options) : DbContext(options)
     public DbSet<AccountDetail> AccountDetails { get; set; }
     public DbSet<AccountStatus> AccountStatuses { get; set; }
     public DbSet<Staff> Staffs { get; set; }
+
     //SERVICE-------------------------------------------------------
     public DbSet<ServiceCategory> ServiceCategories { get; set; }
     public DbSet<Service> Services { get; set; }
@@ -73,6 +74,8 @@ public class Account
     //columns
     public int Id { get; set; }
     public Provider Provider { get; set; }
+
+    [EmailAddress(ErrorMessage = "Invalid email address")]
     [MaxLength(255)]
     public string Email { get; set; }
     [MaxLength(255)]
@@ -103,6 +106,7 @@ public class AccountDetail
     public Account Account { get; set; }
     public Role Role { get; set; }
 }
+
 public class AccountStatus
 {
     //columns
@@ -199,7 +203,7 @@ public class Booking
     [Precision(10, 2)]
     public decimal TotalPrice { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    
+
     //navigational properties
     public Room Room { get; set; }
     public Service Service { get; set; }

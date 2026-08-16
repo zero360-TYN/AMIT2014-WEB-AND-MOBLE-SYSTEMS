@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <link rel="shortcut icon" href="\images\header_icon.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <!--CSS-->
+    <link rel="stylesheet" href="/css/app.css" asp-append-version="true">
+    <!--Import View file code to header -->
+    @RenderSection("head", required: false)
+</head>
+<body>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!--Js Lib-->
+    <script src="~/jsLib/jquery.min.js"></script>
+    <script src="~/jsLib/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/jsLib/jquery.validate.min.js"></script>
+    <script src="~/jsLib/jquery.validate.unobtrusive.min.js"></script>
+    <!--java script-->
+    <script src="~/js/app.js" asp-append-version="true"></script>
+    <!--Import View file code to foot example:js file -->
+    @RenderSection("foot", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
