@@ -1,4 +1,5 @@
 global using Assignment.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -26,5 +27,10 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapDefaultControllerRoute();
+
 app.Run();
