@@ -4,8 +4,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSqlServer<DB>($@"
     Data Source=(LocalDB)\MSSQLLocalDB;
-    AttachDbFilename={builder.Environment.ContentRootPath}\DB.mdf;
+    AttachDbFilename={builder.Environment.ContentRootPath}\pokemonDB.mdf;
+    Initial Catalog=AssignmentDB_v2;
+    Integrated Security=True;
 ");
+
+builder.Services
+    .AddAuthentication(options =>
+     {
+         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; // used to save the cookies of the user to keep login in the system
+         options.DefaultChallengeScheme = "Google";
+     })
+    .AddCookie()
+    .AddGoogle("Google", options =>
+     {
+         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+     });
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();

@@ -1,0 +1,17 @@
+﻿@using Assignment.Helpers;
+
+@{
+    Layout = "_AuthLayout";
+    ViewBag.Title = "Sign Up"; 
+}
+<h2>Hi!</h2>
+<h3>Please enter your personal <br> details to start your <br>journey with us!</h3>
+<p>Do you already have an account? <a href="/Account/Login">Login</a></p>
+
+<h1>Create an Account</h1>
+@Html.Input(type : "email", id : "signupId", placeholder : "Email Address") <br>
+@Html.Input(type : "text", id : "signupName", placeholder : "Username") <br>
+@Html.Input(type : "password", id : "signupPassword", placeholder : "Password") <br>
+@Html.Input(type : "password", id : "signupConfirmPassword", placeholder : "Confirm Password") <br>
+
+@Html.Button("Sign Up", type : "submit")
