@@ -1,5 +1,6 @@
 global using Assignment.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Assignment.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -24,7 +25,12 @@ builder.Services
      });
 
 var app = builder.Build();
-
+//DbSeeder 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DB>();
+    DbSeeder.Initialize(db);
+}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

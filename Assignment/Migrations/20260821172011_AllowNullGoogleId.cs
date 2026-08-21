@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class initDB : Migration
+    public partial class AllowNullGoogleId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,7 @@ namespace Assignment.Migrations
                     Provider = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    GoogleId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    GoogleId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {

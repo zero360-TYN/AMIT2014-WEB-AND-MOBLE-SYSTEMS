@@ -9,7 +9,9 @@
             {
                 var dbDatas = yourquery...;
                 var tableData = new DynamicTableViewModel
-                Headers = ["Header1", "Header2", "Header3"....]//based on your dbData columns !!!
+                {
+                   Headers = ["Header1", "Header2", "Header3"....]//based on your dbData columns !!!
+                };
                 foreach (var dbData in dbDatas)
                 {
                     var row = new List<string>

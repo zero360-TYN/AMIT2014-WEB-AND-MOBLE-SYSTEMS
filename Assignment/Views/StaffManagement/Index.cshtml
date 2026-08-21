@@ -2,5 +2,17 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    //mock test table list
+    var tableData = new TableListingViewModel
+    {
+        Headers = new List<string> { "ID", "Name", "Position", "Department" },
+        Rows = new List<List<string>>
+        {
+            new List<string> { "1", "John Doe", "Manager", "Sales" },
+            new List<string> { "2", "Jane Smith", "Developer", "IT" },
+            new List<string> { "3", "Emily Johnson", "Designer", "Marketing" }
+        }
+    };
 }
 <p>Welcome to the Staff Management page.</p>
+@Html.Partial("_TableList", tableData)

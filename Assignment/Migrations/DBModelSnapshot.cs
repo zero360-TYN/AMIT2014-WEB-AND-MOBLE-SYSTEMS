@@ -36,7 +36,6 @@ namespace Assignment.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("GoogleId")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
