@@ -16,4 +16,10 @@ namespace Assignment.Models
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
     }
+    // ViewModel for displaying a table dynamically in a view
+    public class TableListingViewModel
+    {
+        public List<string> Headers { get; set; } = [];
+        public List<List<string>> Rows { get; set; } = [];
+    }
 }

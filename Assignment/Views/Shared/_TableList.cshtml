@@ -1,0 +1,62 @@
+﻿@model TableListingViewModel
+@*
+    Manual: This is a partial view for rendering a table with dynamic headers and rows.
+            use the TableListingViewModel to pass the headers and rows to this view.
+    example usage:
+    ============================================================
+        ExampleController.cs:
+            public IActionResult Example()
+            {
+                var dbDatas = yourquery...;
+                var tableData = new DynamicTableViewModel
+                Headers = ["Header1", "Header2", "Header3"....]//based on your dbData columns !!!
+                foreach (var dbData in dbDatas)
+                {
+                    var row = new List<string>
+                    {
+                        //map your dbData properties to the correct headers
+                        dbData.Property1,
+                        dbData.Property2 ?? "N/A",
+                        dbData.Property3,
+                        //you can add buttons or other HTML elements as HTML strings in the row data, for example:
+                        $"<a href='/...' class='...'>custom HTML element</a>"
+                    };
+                    tableData.Rows.Add(row);
+                }
+                return View(tableData);
+             }
+        ============================================================
+        In your view (e.g., Example.cshtml):
+            @model TableListingViewModel
+            @Html.Partial("_TableList", Model)
+*@
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            @foreach (var header in Model.Headers)
+            {
+                <th>@header</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Rows.Any())
+        {
+            @foreach (var row in Model.Rows)
+            {
+                <tr>
+                    @foreach (var cell in row)
+                    {
+                        <td>@Html.Raw(cell)</td>
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="@Model.Headers.Count" class="text-center">No data available</td>
+            </tr>
+        }
+    </tbody>
+</table>
