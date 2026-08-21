@@ -81,7 +81,7 @@ public class Account
     [MaxLength(255)]
     public string PasswordHash { get; set; }
     [MaxLength(255)]
-    public string GoogleId { get; set; }
+    public string? GoogleId { get; set; }
 
     //navigational properties
     public AccountDetail AccountDetail { get; set; }

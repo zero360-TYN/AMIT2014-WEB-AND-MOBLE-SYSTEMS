@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DB))]
-    [Migration("20260815162111_initDB")]
-    partial class initDB
+    [Migration("20260821184903_AllowGoogleIdCanBeNullIfProviderIsLocal")]
+    partial class AllowGoogleIdCanBeNullIfProviderIsLocal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,6 @@ namespace Assignment.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("GoogleId")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
