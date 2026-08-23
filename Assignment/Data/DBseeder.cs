@@ -39,10 +39,17 @@ public static class DbSeeder
                 AvatarIcon = f.Internet.Avatar(),
                 CreatedAt = f.Date.Past(1)
             })
-            .RuleFor(a => a.AccountStatus, (f, a) => new AccountStatus
+            .RuleFor(a => a.AccountStatus, (f, a) =>
             {
-                Status = f.PickRandom<AccountStatusType>(),
-                BlockingReason = f.Random.Bool(0.2f) ? f.Lorem.Sentence() : null
+                var randomStatus = f.PickRandom<AccountStatusType>();
+
+                return new AccountStatus
+                {
+                    Status = randomStatus,
+                    BlockingReason = randomStatus == AccountStatusType.blocked
+                        ? f.Lorem.Sentence()
+                        : f.Random.Bool(0.2f) ? f.Lorem.Sentence() : null
+                };
             })
             .RuleFor(a => a.Staff, (f, a) => new Staff());
 
@@ -58,10 +65,17 @@ public static class DbSeeder
                 AvatarIcon = f.Internet.Avatar(),
                 CreatedAt = f.Date.Past(1)
             })
-            .RuleFor(a => a.AccountStatus, (f, a) => new AccountStatus
+            .RuleFor(a => a.AccountStatus, (f, a) =>
             {
-                Status = f.PickRandom<AccountStatusType>(),
-                BlockingReason = f.Random.Bool(0.2f) ? f.Lorem.Sentence() : null
+                var randomStatus = f.PickRandom<AccountStatusType>();
+
+                return new AccountStatus
+                {
+                    Status = randomStatus,
+                    BlockingReason = randomStatus == AccountStatusType.blocked
+                        ? f.Lorem.Sentence()
+                        : f.Random.Bool(0.2f) ? f.Lorem.Sentence() : null
+                };
             });
 
         var fakeAccounts = staffAccountFaker.Generate(20);

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <!--CSS-->
     <link rel="stylesheet" href="/css/app.css" asp-append-version="true">
+    <link rel="stylesheet" href="/css/BasicVisualOfTesting.css" asp-append-version="true">
     <!--Import View file code to header -->
     @RenderSection("head", required: false)
 </head> 
@@ -29,8 +30,31 @@
     <script src="~/jsLib/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/jsLib/jquery.validate.min.js"></script>
     <script src="~/jsLib/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/jsLib/sweetalert2.all.min.js"></script>
     <!--java script-->
     <script src="~/js/app.js" asp-append-version="true"></script>
+    <!--Temp data display-->
+    @if (TempData["AlertMessage"] != null)
+    {
+        <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',      
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    //default icon is info, you can set it to success, error, warning, question
+                    icon: '@(TempData["AlertType"] ?? "info")',
+                    text: '@(TempData["AlertMessage"] ?? "An error occurred.")'
+                });
+        </script>
+    }
     <!--Import View file code to foot example:js file -->
     @RenderSection("foot", required: false)
 </body>

@@ -22,4 +22,31 @@ namespace Assignment.Models
         public List<string> Headers { get; set; } = [];
         public List<List<string>> Rows { get; set; } = [];
     }
+
+    //staff details/edit view model
+    public class StaffDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string RoleName { get; set; }
+        public string AvatarIcon { get; set; }
+        public AccountStatusType Status { get; set; }
+        public string? BlockingReason { get; set; }
+        public string? BlockBy { get; set; }
+    }
+
+    public class StaffEditViewModel
+    {
+        public int Id { get; set; }
+        [Required(ErrorMessage = "Username is required.")]
+        public string Username { get; set; }
+        public string AvatarIcon { get; set; }
+        public bool RemoveAvatar { get; set; }
+
+        [Required(ErrorMessage = "Please select an account status.")]
+        [EnumDataType(typeof(AccountStatusType), ErrorMessage = "Invalid status value.")]
+        public AccountStatusType Status { get; set; }
+        public string? BlockingReason { get; set; }
+    }
 }

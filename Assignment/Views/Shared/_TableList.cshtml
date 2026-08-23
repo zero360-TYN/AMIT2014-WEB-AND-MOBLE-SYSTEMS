@@ -32,8 +32,8 @@
             @model TableListingViewModel
             @Html.Partial("_TableList", Model)
 *@
-<table class="table table-bordered table-hover">
-    <thead class="table-dark">
+<table class="simple-table">
+    <thead>
         <tr>
             @foreach (var header in Model.Headers)
             {

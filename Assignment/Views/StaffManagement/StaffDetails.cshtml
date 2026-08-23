@@ -1,0 +1,42 @@
+﻿@model StaffDetailsViewModel
+
+<div>
+    <h1>Staff Profile</h1>
+    
+    <div>
+        <img src="@Model.AvatarIcon" alt="Avatar" />
+        <h2>@Model.Username</h2>
+        <span>@Model.RoleName</span>
+    </div>
+
+    <table class="simple-table">
+        <tbody>
+            <tr>
+                <th>Staff ID</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th>Account Status</th>
+                <td>@Model.Status</td>
+            </tr>
+            @if (Model.Status == AccountStatusType.blocked)
+            {
+                <tr>
+                    <th>Blocking Reason</th>
+                    <td>@(Model.BlockingReason ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <th>Blocked By</th>
+                    <td>@(Model.BlockBy ?? "System")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <a asp-action="List">back to list</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+</div>

@@ -1,0 +1,131 @@
+﻿@model StaffEditViewModel
+
+@{
+    ViewBag.title = "Edit Staff";
+}
+
+<div>
+    <h2>Edit Staff</h2>
+    <hr />
+
+    <form id="editStaffForm" asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <input type="hidden" asp-for="Id" />
+        <!-- Hidden field to store the current avatar icon URL -->
+        <input type="hidden" asp-for="AvatarIcon" />
+
+        <div>
+            <label asp-for="Username"></label>
+            <input asp-for="Username" />
+            <span asp-validation-for="Username"></span>
+        </div>
+        <!-- Avatar div-->
+        <div>
+            <label>Avatar</label>
+            <br />
+            @if (!string.IsNullOrEmpty(Model.AvatarIcon))
+            {
+                <img src="@Model.AvatarIcon" alt="Avatar" width="50" height="50" />
+                <br />
+                <input type="checkbox" asp-for="RemoveAvatar" />
+                <label asp-for="RemoveAvatar">Delete current avatar</label>
+            }
+            else
+            {
+                <span>No avatar found.</span>
+            }
+        </div>
+
+        <div>
+            <label asp-for="Status"></label>
+            <select asp-for="Status" asp-items="Html.GetEnumSelectList<AccountStatusType>()">
+                <option value="">-- Select Status --</option>
+            </select>
+            <span asp-validation-for="Status"></span>
+        </div>
+        <!--only appear when status is blocked-->
+        <div id="blockingReasonDiv" style="display: @(Model.Status == AccountStatusType.blocked ? "block" : "none");">
+            
+            <label asp-for="BlockingReason"></label>
+            <input asp-for="BlockingReason" />
+            <span asp-validation-for="BlockingReason"></span>
+        </div>
+
+        <div>
+            <button id="saveBtn" type="submit">Save Changes</button>
+            <a asp-action="List">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section foot{
+    <script>
+        const statusSelect = document.getElementById('Status');
+        const form = document.getElementById('editStaffForm');
+        const saveBtn = document.getElementById('saveBtn');
+        const blockingReasonDiv = document.getElementById('blockingReasonDiv');
+    
+        const blockedValue = '@((int)AccountStatusType.blocked)';
+        const deleteValue = '@((int)AccountStatusType.deleted)';
+
+        statusSelect.addEventListener('change', function () {
+            if (this.value === blockedValue) {
+                blockingReasonDiv.style.display = 'block';
+            }else {
+            blockingReasonDiv.style.display = 'none';
+            document.getElementById('BlockingReason').value = '';
+            }
+
+            if (this.value === deleteValue) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to delete this staff account. This action cannot be undone.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, submit the form
+                        form.submit();
+                    } else {
+                        // If the user cancels, reset the select value to the previous value
+                        this.value = initialStatusValue;
+                    }
+                });
+            }
+        });
+        const currentFormData = new URLSearchParams(new FormData(form)).toString();
+        saveBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            const newFormData = new URLSearchParams(new FormData(form)).toString();
+            if (newFormData === currentFormData) {
+                Swal.fire({
+                    title: 'No changes to save',
+                    text: "There are no changes to save.",
+                    icon: 'info'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to save changes to this staff account.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user confirms, submit the form
+                    form.submit();
+                }
+                
+            });
+        });
+        
+</script>
+}
