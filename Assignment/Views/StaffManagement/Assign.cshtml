@@ -1,6 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model TableListingViewModel
 @{
     ViewBag.Title = "Assign";
+}
+<form asp-action="Assign" asp-controller="StaffManagement" method="post" id="assignForm">
+    @Html.Partial("_TableList", Model)
+</form>
+
+@section foot {
+    <script>
+        const form = document.getElementById('assignForm');
+        const assignBtns = document.querySelectorAll('button[name="accountId"]');
+
+        assignBtns.forEach(btn => {
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const accountIdValue = this.value;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This action cannot be undone.You only can delete account if you want to remove the staff",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, assign it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const submitInput = document.createElement('input');
+                        submitInput.type = 'hidden';
+                        submitInput.name = 'accountId';
+                        submitInput.value = accountIdValue;
+
+                        form.appendChild(submitInput);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 }

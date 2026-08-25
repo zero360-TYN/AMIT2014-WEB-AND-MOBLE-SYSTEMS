@@ -14,9 +14,68 @@ namespace Assignment.Controllers
         // Access: StaffManagement/Assign
         public IActionResult Assign()
         {
-            return View();
+            var acc = db.Accounts.Include(a => a.AccountDetail)
+                                 .ThenInclude(ad => ad.Role)
+                                 .Include(a => a.AccountStatus)
+                                 .Where(a => a.AccountDetail.Role.RoleName == "Member" &&
+                                        a.AccountStatus.Status != AccountStatusType.deleted)
+                                 .ToList();
+            var tableData = new TableListingViewModel
+            {
+                Headers = new List<string> { "Account ID", "Username", "Email", "Role", "Status", "Actions" }
+            };
+            foreach (var a in acc)
+            {
+                var row = new List<string>
+                {
+                    a.Id.ToString(),
+                    a.AccountDetail?.Username ?? "N/A",
+                    a.Email ?? "N/A",
+                    a.AccountDetail?.Role?.RoleName ?? "N/A",
+                    a.AccountStatus?.Status.ToString() ?? "N/A",
+                    $"<button type='submit' name='accountId' value='{a.Id}'>Assign</button>"
+                };
+                tableData.Rows.Add(row);
+            }
+            return View(tableData);
         }
+        // POST: StaffManagement/Assign
+        [HttpPost]
+        public IActionResult Assign(int accountId)
+        {
+            var account = db.Accounts.Include(a => a.AccountDetail)
+                                     .ThenInclude(ad => ad.Role)
+                                     .Include(a => a.AccountStatus)
+                                     .FirstOrDefault(a => a.Id == accountId &&
+                                                     a.AccountDetail.Role.RoleName == "Member" &&
+                                                     a.AccountStatus.Status != AccountStatusType.deleted);
+            if (account == null)
+            {
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "Account not found or cannot be assigned.";
+                return RedirectToAction("Assign");
+            }
+            // Change role to Staff
+            var staffRole = db.Roles.FirstOrDefault(r => r.RoleName == "Staff");
+            if (staffRole == null)
+            {
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "Staff role not found.";
+                return RedirectToAction("Assign");
+            }
+            account.AccountDetail.RoleId = staffRole.Id;
+            //insert new staff record in staffs table
+            var newStaff = new Staff
+            {
+                AccountId = account.Id
+            };
+            db.Staffs.Add(newStaff);
 
+            db.SaveChanges();
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = $"Account {account.AccountDetail?.Username ?? "N/A"} has been assigned as Staff.";
+            return RedirectToAction("List");
+        }
         //Access: StaffManagement/List
         public IActionResult List()
         {
@@ -127,6 +186,7 @@ namespace Assignment.Controllers
             if (model.Status == AccountStatusType.blocked && string.IsNullOrWhiteSpace(model.BlockingReason))
             {
                 ModelState.AddModelError("BlockingReason", "Reason is required when status is blocked.");
+                return View(model);
             }
 
             var staff = db.Staffs.Include(s => s.Account)
