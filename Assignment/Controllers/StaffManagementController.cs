@@ -44,7 +44,7 @@ namespace Assignment.Controllers
         public IActionResult Assign(int accountId)
         {
             var account = db.Accounts.Include(a => a.AccountDetail)
-                                     .ThenInclude(ad => ad.Role)
+                                        .ThenInclude(ad => ad.Role)
                                      .Include(a => a.AccountStatus)
                                      .FirstOrDefault(a => a.Id == accountId &&
                                                      a.AccountDetail.Role.RoleName == "Member" &&
@@ -191,10 +191,10 @@ namespace Assignment.Controllers
 
             var staff = db.Staffs.Include(s => s.Account)
                                     .ThenInclude(a => a.AccountDetail)
-                                .Include(s => s.Account)
+                                 .Include(s => s.Account)
                                     .ThenInclude(a => a.AccountStatus)
-                                .FirstOrDefault(s => s.Id == model.Id &&
-                                                s.Account.AccountStatus.Status != AccountStatusType.deleted);
+                                 .FirstOrDefault(s => s.Id == model.Id &&
+                                                 s.Account.AccountStatus.Status != AccountStatusType.deleted);
             if (staff == null)
             {
                 TempData["AlertType"] = "error";
