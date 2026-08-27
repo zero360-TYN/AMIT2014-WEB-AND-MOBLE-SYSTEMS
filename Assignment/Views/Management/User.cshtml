@@ -1,4 +1,6 @@
 ﻿@using Assignment.Helpers
+@model List<UserVM>;
+
 @{
     Layout = "_Layout";
     ViewBag.Title = "User Management";
@@ -14,33 +16,58 @@
         <option value="user">User</option>
     </select>
 </div>
-@Html.Input(type : "search", placeholder : "Search")
+<div>
+    <form asp-controller="Management" asp-action="SearchUser" method="post">
+        @Html.Input(type: "search", placeholder: "Search", aspfor: "Username")  
+        @Html.Button("Go", type: "submit")
+    </form>
+</div>
 
-@Html.Button("Go", type: "submit")
-
-<p>All Users： 0</p>
+<p>All Users： @Model.Count</p>
 <div>
     <table>
-        <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Username</th>
-            <th>Joined Date</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-        <tr>
-            <td>Yong Thong</td>
-            <td>yongthong@example.com</td>
-            <td>User</td>
-            <td>yongthong</td>
-            <td>2023-01-01</td>
-            <td>Active</td>
-            <td>
-                @Html.Button("Block")
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Username</th>
+                <th>Joined Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model)
+            {
+                <tr>
+                    <td>@detail.Email</td>
+                    <td>
+                        @switch (detail.accountDetail.RoleId)
+                        {
+                            case 1:
+                                @:Staff
+                                break;
+                            case 2:
+                                @:User
+                                break;
+                            case 3:
+                                @:Admin
+                                break;
+                            default:
+                                @:Unknown
+                                break;
+                        }
+                    </td>
+                    <td>@detail.accountDetail.Username</td>
+                    <td>@detail.accountDetail.CreatedAt</td>
+                    <td>Active</td>
+                    <td>
+                        @Html.Button("Block")
+                    </td>
+                </tr>
+            }
+        </tbody>
+
     </table>
 
 </div>

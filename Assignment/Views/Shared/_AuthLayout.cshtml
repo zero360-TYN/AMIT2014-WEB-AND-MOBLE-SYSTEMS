@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
 
-    <link rel="shortcut icon" href="\images\header_icon.png">
+    <link rel="shortcut icon" href="\images\title-icon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <!--CSS-->
-    <link rel="stylesheet" href="/css/app.css" asp-append-version="true">
+    <link rel="stylesheet" href=@ViewBag.Css asp-append-version="true">
     <!--Import View file code to header -->
     @RenderSection("head", required: false)
 </head>
 <body>
-
     <main>
         @RenderBody()
     </main>
@@ -27,5 +26,6 @@
     <script src="~/js/app.js" asp-append-version="true"></script>
     <!--Import View file code to foot example:js file -->
     @RenderSection("foot", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,28 +1,42 @@
 ﻿@using Assignment.Helpers;
+@model LoginVM;
 
 @{
     Layout = "_AuthLayout";  
     ViewBag.Title = "Login";
-
+    ViewBag.Css = "/css/account.css";
 }
 
-<h1>Login Your Account</h1>
-<form>
-    <div>
-        <input type="text" id="username" placeholder="Username" maxlength="30" /> <br />
-        <input type="password" id="password" placeholder="Password" /> <br />
+<div class="login-page">
+    <div class ="login-container">
+        <h1>Login Your Account</h1>
+        <form asp-controller="Account" asp-action="Login" method="post" class="login-details">
+            <div class="login-input">
+                @Html.Input(type: "email", id: "login-email", maxlength: "30", placeholder: "Email Address", aspfor: "Email")
+                <span asp-validation-for="Email"></span>
+                @Html.Input(type: "password", id: "login-password", placeholder: "Password", aspfor: "Password")
+                <span asp-validation-for="Password"></span>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <span class="text-danger">@ViewBag.ErrorMessage</span>
+                }
+            </div>
+
+            <a href="/Account/Reset_Password">Forget Password?</a>
+
+            @Html.Button("Login", type: "submit", id: "login-btn")
+            <strong>Note: 3 failed attempts will lock out the account for 15 minutes.</strong>
+            <a href="/Account/SignIn">
+                <button type="button" id="google-btn"><img src="/images/Account/google-logo.png" /></button>
+            </a>
+
+        </form>
     </div>
-    <div>
-        <a href="/Account/Reset_Password">Forget Password?</a>
+
+
+    <div class="login-description">
+        <h1>WELCOME TO <br />POKEMON THERAPY <br />CENTRA!</h1>
+        <p id="to-signup">Do you have an account? <a href="/Account/SignUp" class="signup-link">Sign Up</a></p>
     </div>
-    @Html.Button("Login", type : "submit") <br />
-    <strong>Note: 3 failed attempts will lock out the account for 15 minutes.</strong><br>
-    <a href="/Account/SignIn">
-        @Html.Button("Login with Google", type : "button")
-    </a>
+</div>
 
-</form>
-
-
-<h1>WELCOME TO <br />POKEMON THERAPY <br />CENTRA!</h1>
-<p>Do you have an account? <a href="/Account/SignUp">Sign Up</a></p>

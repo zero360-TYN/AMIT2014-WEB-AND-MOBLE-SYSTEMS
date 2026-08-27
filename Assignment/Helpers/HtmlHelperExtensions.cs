@@ -38,7 +38,9 @@ namespace Assignment.Helpers
                                          string? type = null,
                                          string? placeholder = null,
                                          string? @class = null,
-                                         string? id = null)
+                                         string? maxlength = null,
+                                         string? id = null,
+                                         string? aspfor = null)
         {
             var input = new TagBuilder("input");
 
@@ -57,9 +59,19 @@ namespace Assignment.Helpers
                 input.Attributes["class"] = @class;
             }
 
+            if (!string.IsNullOrEmpty(maxlength))
+            {
+                input.Attributes["maxlength"] = maxlength;
+            }
+
             if (!string.IsNullOrEmpty(id))
             {
                 input.Attributes["id"] = id;
+            }
+
+            if (!string.IsNullOrEmpty(aspfor))
+            {
+                input.Attributes["name"] = aspfor;
             }
 
             return input;

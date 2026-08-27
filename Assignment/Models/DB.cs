@@ -19,6 +19,7 @@ public class DB(DbContextOptions options) : DbContext(options)
     public DbSet<AccountDetail> AccountDetails { get; set; }
     public DbSet<AccountStatus> AccountStatuses { get; set; }
     public DbSet<Staff> Staffs { get; set; }
+
     //SERVICE-------------------------------------------------------
     public DbSet<ServiceCategory> ServiceCategories { get; set; }
     public DbSet<Service> Services { get; set; }
@@ -73,12 +74,14 @@ public class Account
     //columns
     public int Id { get; set; }
     public Provider Provider { get; set; }
+
+    [EmailAddress(ErrorMessage = "Invalid email address")]
     [MaxLength(255)]
     public string Email { get; set; }
     [MaxLength(255)]
     public string PasswordHash { get; set; }
     [MaxLength(255)]
-    public string GoogleId { get; set; }
+    public string? GoogleId { get; set; }
 
     //navigational properties
     public AccountDetail AccountDetail { get; set; }
@@ -103,6 +106,7 @@ public class AccountDetail
     public Account Account { get; set; }
     public Role Role { get; set; }
 }
+
 public class AccountStatus
 {
     //columns
