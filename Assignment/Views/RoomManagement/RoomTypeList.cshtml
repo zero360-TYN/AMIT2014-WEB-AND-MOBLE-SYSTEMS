@@ -1,0 +1,23 @@
+@model TableListingViewModel
+
+@{
+    ViewBag.Title = "Room Type List";
+}
+
+<h2>Room Type Management</h2>
+
+<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+    Fields = new() {
+        { nameof(RoomType.Id), "Room Type ID" },
+        { nameof(RoomType.Name), "Name" },
+        { nameof(RoomType.Description), "Description" },
+        { nameof(RoomType.BasePrice), "Base Price" }
+    }
+}' />
+
+<div id="table-container">
+    @Html.Partial("_TableList", Model)
+</div>
+
+<br />
+<a asp-action="Index">Back to Dashboard</a>

@@ -1,0 +1,66 @@
+@model Assignment.Models.BookingDetailsViewModel
+
+@{
+    ViewBag.Title = "Booking Details";
+}
+
+<h2>Booking Details #@Model.Id</h2>
+
+<div>
+    <hr />
+    <table class="simple-table">
+        <tbody>
+            <tr>
+                <th>Booking ID</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Customer</th>
+                <td>@Model.CustomerName (@Model.CustomerEmail)</td>
+            </tr>
+            <tr>
+                <th>Pokemon Name</th>
+                <td><strong>@Model.PokemonName</strong></td>
+            </tr>
+            <tr>
+                <th>Special Notes</th>
+                <td>@(string.IsNullOrWhiteSpace(Model.Notes) ? "None" : Model.Notes)</td>
+            </tr>
+            <tr>
+                <th>Service</th>
+                <td>@Model.ServiceName (@Model.ServiceCategoryName)</td>
+            </tr>
+            <tr>
+                <th>Room</th>
+                <td>Room @Model.RoomNumber (@Model.RoomTypeName)</td>
+            </tr>
+            <tr>
+                <th>Assigned Staff</th>
+                <td>@Html.Raw(Model.StaffName)</td>
+            </tr>
+            <tr>
+                <th>Start Time</th>
+                <td>@Model.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+            <tr>
+                <th>End Time</th>
+                <td>@Model.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><strong>@Model.Status.ToString().ToUpper()</strong></td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td><strong>@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
+            </tr>
+            <tr>
+                <th>Booked At</th>
+                <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br />
+    <a asp-action="List">Back to List</a>
+</div>

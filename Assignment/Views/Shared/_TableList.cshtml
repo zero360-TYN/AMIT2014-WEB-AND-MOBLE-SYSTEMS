@@ -1,64 +1,226 @@
-﻿@model TableListingViewModel
-@*
-    Manual: This is a partial view for rendering a table with dynamic headers and rows.
-            use the TableListingViewModel to pass the headers and rows to this view.
-    example usage:
-    ============================================================
-        ExampleController.cs:
-            public IActionResult Example()
-            {
-                var dbDatas = yourquery...;
-                var tableData = new DynamicTableViewModel
-                {
-                   Headers = ["Header1", "Header2", "Header3"....]//based on your dbData columns !!!
-                };
-                foreach (var dbData in dbDatas)
-                {
-                    var row = new List<string>
-                    {
-                        //map your dbData properties to the correct headers
-                        dbData.Property1,
-                        dbData.Property2 ?? "N/A",
-                        dbData.Property3,
-                        //you can add buttons or other HTML elements as HTML strings in the row data, for example:
-                        $"<a href='/...' class='...'>custom HTML element</a>"
-                    };
-                    tableData.Rows.Add(row);
-                }
-                return View(tableData);
-             }
-        ============================================================
-        In your view (e.g., Example.cshtml):
-            @model TableListingViewModel
-            @Html.Partial("_TableList", Model)
-*@
-<table class="simple-table">
-    <thead>
-        <tr>
-            @foreach (var header in Model.Headers)
-            {
-                <th>@header</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Rows.Any())
+@model TableListingViewModel
+
+@{
+    var pageSize = Model.PageSize > 0 ? Model.PageSize : 10;
+    var totalRows = Model.PagedRows?.TotalItemCount ?? (Model.Rows != null ? Model.Rows.Count : 0);
+    var totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
+    if (totalPages < 1) totalPages = 1;
+
+    // Retrieve requested page parameter from request query string
+    var hasPageQuery = int.TryParse(Context.Request.Query["page"], out int requestedPage);
+    var currentPage = hasPageQuery ? requestedPage : 1;
+    var needsRedirect = false;
+    string? redirectUrl = null;
+
+    if (hasPageQuery)
+    {
+        if (requestedPage < 1)
         {
-            @foreach (var row in Model.Rows)
+            currentPage = 1;
+            needsRedirect = true;
+        }
+        else if (requestedPage > totalPages && totalRows > 0)
+        {
+            currentPage = totalPages;
+            needsRedirect = true;
+        }
+
+        if (needsRedirect)
+        {
+            var query = new Microsoft.AspNetCore.Routing.RouteValueDictionary();
+            foreach (var key in Context.Request.Query.Keys)
+            {
+                if (!string.IsNullOrEmpty(key) && !string.Equals(key, "page", StringComparison.OrdinalIgnoreCase))
+                {
+                    query[key] = Context.Request.Query[key].ToString();
+                }
+            }
+            query["page"] = currentPage;
+            redirectUrl = Url.Action(null, query);
+        }
+    }
+
+    // Use PagedRows if provided directly; otherwise automatically paginate Model.Rows in-memory
+    var pagedRows = Model.PagedRows ?? (Model.Rows != null && Model.Rows.Any()
+        ? Model.Rows.ToPagedList(currentPage, pageSize)
+        : Enumerable.Empty<List<string>>().ToPagedList(1, pageSize));
+}
+
+@if (needsRedirect && !string.IsNullOrEmpty(redirectUrl))
+{
+    <script>
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', '@redirectUrl');
+        } else {
+            window.location.replace('@redirectUrl');
+        }
+    </script>
+}
+
+<div class="table-list-wrapper">
+    <table class="simple-table">
+        <thead>
+            <tr>
+                @foreach (var header in Model.Headers)
+                {
+                    <th>@header</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (pagedRows.Any())
+            {
+                @foreach (var row in pagedRows)
+                {
+                    <tr>
+                        @foreach (var cell in row)
+                        {
+                            <td>@Html.Raw(cell)</td>
+                        }
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    @foreach (var cell in row)
-                    {
-                        <td>@Html.Raw(cell)</td>
-                    }
+                    <td colspan="@(Model.Headers.Count > 0 ? Model.Headers.Count : 1)" class="text-center">No data available</td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="@Model.Headers.Count" class="text-center">No data available</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+
+    @if (pagedRows.PageCount > 1)
+    {
+        <div class="pagination-container">
+            @Html.PagedListPager(pagedRows, page => {
+                var query = new Microsoft.AspNetCore.Routing.RouteValueDictionary();
+                foreach (var key in Context.Request.Query.Keys)
+                {
+                    if (!string.IsNullOrEmpty(key) && !string.Equals(key, "page", StringComparison.OrdinalIgnoreCase))
+                    {
+                        query[key] = Context.Request.Query[key].ToString();
+                    }
+                }
+                query["page"] = page;
+                return Url.Action(null, query);
+            })
+        </div>
+    }
+</div>
+
+<style>
+    /* Ensure pagination displays strictly on a single horizontal line */
+    .pagination-container {
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .pagination-container ul.pagination,
+    .pagination-container ul {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 6px !important;
+    }
+
+    .pagination-container li {
+        display: inline-flex !important;
+        margin: 0 !important;
+    }
+
+    .pagination-container li a,
+    .pagination-container li span {
+        display: inline-block !important;
+        padding: 6px 12px !important;
+        text-decoration: none !important;
+        border: 1px solid #ccc !important;
+        border-radius: 4px !important;
+        color: #333 !important;
+        background-color: #fff !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        cursor: pointer;
+    }
+
+    .pagination-container li a:hover {
+        background-color: #e9ecef !important;
+        border-color: #bbb !important;
+    }
+
+    .pagination-container li.active span,
+    .pagination-container li.active a {
+        background-color: #007bff !important;
+        color: #fff !important;
+        border-color: #007bff !important;
+        cursor: default;
+    }
+
+    .pagination-container li.disabled span,
+    .pagination-container li.disabled a {
+        color: #aaa !important;
+        pointer-events: none !important;
+        background-color: #f8f9fa !important;
+        border-color: #ddd !important;
+    }
+</style>
+
+<script>
+    if (!window._tableListAjaxInitialized) {
+        window._tableListAjaxInitialized = true;
+
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('.pagination-container a');
+            if (!link) return;
+
+            const targetUrl = link.getAttribute('href');
+            if (!targetUrl || targetUrl === '#' || targetUrl.startsWith('javascript:')) return;
+
+            e.preventDefault();
+
+            const wrapper = link.closest('.table-list-wrapper');
+            if (!wrapper) {
+                window.location.href = targetUrl;
+                return;
+            }
+
+            fetch(targetUrl, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newWrapper = doc.querySelector('.table-list-wrapper');
+
+                if (newWrapper) {
+                    wrapper.innerHTML = newWrapper.innerHTML;
+                } else {
+                    window.location.href = targetUrl;
+                    return;
+                }
+
+                if (window.history && window.history.pushState) {
+                    window.history.pushState(null, '', targetUrl);
+                }
+
+                document.dispatchEvent(new CustomEvent('tableListUpdated', { detail: { url: targetUrl } }));
+            })
+            .catch(err => {
+                console.error('Pagination AJAX load failed:', err);
+                window.location.href = targetUrl;
+            });
+        });
+
+        window.addEventListener('popstate', function() {
+            window.location.reload();
+        });
+    }
+</script>

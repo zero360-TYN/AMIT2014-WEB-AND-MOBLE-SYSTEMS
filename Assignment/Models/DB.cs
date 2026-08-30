@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -56,6 +56,25 @@ public class DB(DbContextOptions options) : DbContext(options)
             .WithMany()
             .HasForeignKey(b => b.RoomId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    // Automatically update expired confirmed bookings to completed status
+    public int AutoCompleteExpiredBookings()
+    {
+        var now = DateTime.Now;
+        var expiredBookings = Bookings
+            .Where(b => b.Status == BookingStatus.confirmed && b.EndTime <= now)
+            .ToList();
+
+        if (expiredBookings.Any())
+        {
+            foreach (var b in expiredBookings)
+            {
+                b.Status = BookingStatus.completed;
+            }
+            SaveChanges();
+        }
+        return expiredBookings.Count;
     }
 }
 //entity class------------------------------------------------------------------------------------------

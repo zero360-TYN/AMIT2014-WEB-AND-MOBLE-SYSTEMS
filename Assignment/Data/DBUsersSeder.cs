@@ -3,7 +3,7 @@ using Assignment.Models;
 
 namespace Assignment.Data;
 
-public static class DbSeeder
+public static class DBUsersSeder
 {
     public static void Initialize(DB db)
     {

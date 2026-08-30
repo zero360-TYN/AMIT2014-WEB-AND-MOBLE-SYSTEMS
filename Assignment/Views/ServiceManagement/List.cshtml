@@ -1,16 +1,18 @@
 @model TableListingViewModel
 
 @{
-    ViewBag.Title = "Room List";
+    ViewBag.Title = "Service List";
 }
 
-<h2>Room Management</h2>
+<h2>Service Management</h2>
 
 <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
     Fields = new() {
-        { nameof(Room.Id), "Room ID" },
-        { nameof(Room.RoomNumber), "Room Number" },
-        { nameof(RoomType.Name), "Room Type" }
+        { nameof(Service.Id), "Service ID" },
+        { nameof(Service.Name), "Service Name" },
+        { $"{nameof(Service.ServiceCategory)}.{nameof(ServiceCategory.Name)}", "Category" },
+        { nameof(Service.Price), "Price" },
+        { nameof(Service.DurationMinutes), "Duration" }
     }
 }' />
 
@@ -19,7 +21,7 @@
 </div>
 
 <form id="deleteForm" asp-action="Delete" method="post" style="display:none;">
-    <input type="hidden" name="id" id="deleteRoomId" />
+    <input type="hidden" name="id" id="deleteServiceId" />
 </form>
 
 <br />
@@ -28,7 +30,7 @@
 @section foot {
     <script>
         const deleteForm = document.getElementById('deleteForm');
-        const deleteRoomId = document.getElementById('deleteRoomId');
+        const deleteServiceId = document.getElementById('deleteServiceId');
 
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('.btn-delete');
@@ -40,7 +42,7 @@
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: `You are about to delete Room ${name}. This action cannot be undone.`,
+                text: `You are about to delete Service "${name}". This action cannot be undone.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -48,7 +50,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    deleteRoomId.value = id;
+                    deleteServiceId.value = id;
                     deleteForm.submit();
                 }
             });

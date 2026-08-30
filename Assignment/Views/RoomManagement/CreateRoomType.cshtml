@@ -1,0 +1,68 @@
+@model Assignment.Models.RoomTypeCreateViewModel
+
+@{
+    ViewBag.Title = "Create Room Type";
+}
+
+<h2>Create Room Type</h2>
+
+<hr />
+<form id="createRoomTypeForm" asp-action="CreateRoomType" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Description"></label>
+        <input asp-for="Description" />
+        <span asp-validation-for="Description"></span>
+    </div>
+    <div>
+        <label asp-for="BasePrice"></label>
+        <input asp-for="BasePrice" type="number" step="0.01" />
+        <span asp-validation-for="BasePrice"></span>
+    </div>
+    <div>
+        <label asp-for="ServiceCategoryId"></label>
+        <select asp-for="ServiceCategoryId" asp-items="ViewBag.ServiceCategories">
+            <option value="">-- Select Service Category --</option>
+        </select>
+        <span asp-validation-for="ServiceCategoryId"></span>
+    </div>
+    <br />
+    <div>
+        <button id="createBtn" type="submit">Create</button>
+        <a asp-action="RoomTypeList">Back to List</a> |
+        <a asp-action="Index">Back to Dashboard</a>
+    </div>
+</form>
+
+@section foot {
+    <script>
+        const form = document.getElementById('createRoomTypeForm');
+        const createBtn = document.getElementById('createBtn');
+
+        createBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (!$(form).valid()) {
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to create a new room type.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, create it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}

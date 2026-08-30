@@ -1,14 +1,15 @@
-@model Assignment.Models.RoomCreateViewModel
+@model Assignment.Models.RoomEditViewModel
 
 @{
-    ViewBag.Title = "Create Room";
+    ViewBag.Title = "Edit Room";
 }
 
-<h2>Create Room</h2>
+<h2>Edit Room</h2>
 
 <hr />
-<form id="createRoomForm" asp-action="Create" method="post">
+<form id="editRoomForm" asp-action="Edit" method="post">
     <div asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="Id" />
     <div>
         <label asp-for="RoomNumber"></label>
         <input asp-for="RoomNumber" />
@@ -23,30 +24,41 @@
     </div>
     <br />
     <div>
-        <button id="createBtn" type="submit">Create</button>
-        <a asp-action="List">Back to List</a>
+        <button id="saveBtn" type="submit">Save Changes</button>
+        <a asp-action="List">Cancel</a>
     </div>
 </form>
 
 @section foot {
     <script>
-        const form = document.getElementById('createRoomForm');
-        const createBtn = document.getElementById('createBtn');
+        const form = document.getElementById('editRoomForm');
+        const saveBtn = document.getElementById('saveBtn');
+        const currentFormData = new URLSearchParams(new FormData(form)).toString();
 
-        createBtn.addEventListener('click', function(event) {
+        saveBtn.addEventListener('click', function(event) {
             event.preventDefault();
             if (!$(form).valid()) {
                 return;
             }
 
+            const newFormData = new URLSearchParams(new FormData(form)).toString();
+            if (newFormData === currentFormData) {
+                Swal.fire({
+                    title: 'No changes to save',
+                    text: "There are no changes to save.",
+                    icon: 'info'
+                });
+                return;
+            }
+
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You are about to create a new room.",
+                text: "You are about to save changes to this room.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, create it!'
+                confirmButtonText: 'Yes, save it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

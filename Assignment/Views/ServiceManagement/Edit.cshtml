@@ -1,0 +1,81 @@
+@model Assignment.Models.ServiceEditViewModel
+
+@{
+    ViewBag.Title = "Edit Service";
+}
+
+<h2>Edit Service</h2>
+
+<hr />
+<form id="editServiceForm" asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Description"></label>
+        <input asp-for="Description" />
+        <span asp-validation-for="Description"></span>
+    </div>
+    <div>
+        <label asp-for="Price"></label>
+        <input asp-for="Price" type="number" step="0.01" />
+        <span asp-validation-for="Price"></span>
+    </div>
+    <div>
+        <label asp-for="DurationMinutes"></label>
+        <input asp-for="DurationMinutes" type="number" step="1" />
+        <span asp-validation-for="DurationMinutes"></span>
+    </div>
+    <div>
+        <label asp-for="ServiceCategoryName"></label>
+        <input asp-for="ServiceCategoryName" readonly disabled />
+    </div>
+    <br />
+    <div>
+        <button id="saveBtn" type="submit">Save Changes</button>
+        <a asp-action="List">Cancel</a>
+    </div>
+</form>
+
+@section foot {
+    <script>
+        const form = document.getElementById('editServiceForm');
+        const saveBtn = document.getElementById('saveBtn');
+        const currentFormData = new URLSearchParams(new FormData(form)).toString();
+
+        saveBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (!$(form).valid()) {
+                return;
+            }
+
+            const newFormData = new URLSearchParams(new FormData(form)).toString();
+            if (newFormData === currentFormData) {
+                Swal.fire({
+                    title: 'No changes to save',
+                    text: "There are no changes to save.",
+                    icon: 'info'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to save changes to this service.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}

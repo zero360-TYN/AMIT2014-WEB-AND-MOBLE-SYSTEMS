@@ -1,0 +1,35 @@
+@model TableListingViewModel
+
+@{
+    ViewBag.Title = "Booking List";
+    var currentStatus = ViewBag.CurrentStatus?.ToString() ?? "All";
+}
+
+<h2>Booking Management - @currentStatus</h2>
+
+<div style="margin-bottom: 15px;">
+    <a asp-action="List">All</a> |
+    <a asp-action="List" asp-route-status="pending">Pending</a> |
+    <a asp-action="List" asp-route-status="confirmed">Confirmed</a> |
+    <a asp-action="List" asp-route-status="completed">Completed</a> |
+    <a asp-action="List" asp-route-status="cancelled">Cancelled</a>
+</div>
+
+<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+    Fields = new() {
+        { nameof(Booking.Id), "Booking ID" },
+        { $"{nameof(Booking.Account)}.{nameof(Account.AccountDetail)}.{nameof(AccountDetail.Username)}", "Customer Name" },
+        { $"{nameof(Booking.Staff)}.{nameof(Staff.Account)}.{nameof(AccountDetail.Username)}", "Staff Name" },
+        { nameof(BookingDetail.PokemonName), "Pokemon Name" },
+        { nameof(Service.Name), "Service" },
+        { nameof(Room.RoomNumber), "Room Number" }
+    }
+}' />
+
+<div id="table-container">
+    @Html.Partial("_TableList", Model)
+</div>
+
+<br />
+<a asp-action="Create">Create New Booking</a> |
+<a asp-action="Index">Back to Dashboard</a>

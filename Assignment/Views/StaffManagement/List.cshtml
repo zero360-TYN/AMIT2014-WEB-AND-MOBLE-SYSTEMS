@@ -1,2 +1,19 @@
-﻿@model TableListingViewModel
-@Html.Partial("_TableList", Model)
+@model TableListingViewModel
+
+@{
+    ViewBag.Title = "Staff List";
+}
+
+<h2>Staff Management</h2>
+
+<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+    Fields = new() {
+        { nameof(Staff.Id), "Staff ID" },
+        { nameof(AccountDetail.Username), "Staff Name" },
+        { nameof(Account.Email), "Email" }
+    }
+}' />
+
+<div id="table-container">
+    @Html.Partial("_TableList", Model)
+</div>

@@ -1,3 +1,4 @@
+global using Assignment;
 global using Assignment.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Assignment.Data;
@@ -29,7 +30,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DB>();
-    DbSeeder.Initialize(db);
+    DBUsersSeder.Initialize(db);
+    DBRoomSeeder.Initialize(db);
+    DbServiceSeeder.Initialize(db);
+    DbBookingSeeder.Initialize(db);
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();

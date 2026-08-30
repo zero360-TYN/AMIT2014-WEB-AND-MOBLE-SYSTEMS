@@ -1,0 +1,48 @@
+@model AjaxSearchViewModel
+
+@{
+    var url = Model.Url ?? Context.Request.Path.ToString();
+    var search = Context.Request.Query["search"].ToString();
+    var searchBy = Context.Request.Query["searchBy"].ToString();
+}
+
+<form data-ajax="true"
+      data-ajax-method="get"
+      data-ajax-url="@url"
+      data-ajax-update="@Model.Target"
+      data-ajax-mode="replace">
+
+    <!-- Automatically preserve other existing query parameters (e.g. status, categoryId, etc.) -->
+    @foreach (var key in Context.Request.Query.Keys)
+    {
+        if (!string.IsNullOrEmpty(key) &&
+            !string.Equals(key, "search", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(key, "searchBy", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(key, "page", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(key, "_", StringComparison.OrdinalIgnoreCase))
+        {
+            <input type="hidden" name="@key" value="@Context.Request.Query[key]" />
+        }
+    }
+
+    <select name="searchBy">
+        <option value="">-- All --</option>
+        @foreach (var (field, displayName) in Model.Fields)
+        {
+            var label = !string.IsNullOrWhiteSpace(displayName) ? displayName : field;
+            if (string.Equals(searchBy, field, StringComparison.OrdinalIgnoreCase))
+            {
+                <option value="@field" selected>@label</option>
+            }
+            else
+            {
+                <option value="@field">@label</option>
+            }
+        }
+    </select>
+
+    <input type="text" name="search" value="@search"
+           placeholder="Type to search..." autocomplete="off" />
+
+    <button type="submit">Search</button>
+</form>

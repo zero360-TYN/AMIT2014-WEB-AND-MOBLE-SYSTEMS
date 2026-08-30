@@ -1,0 +1,142 @@
+@model Assignment.Models.BookingCreateViewModel
+
+@{
+    ViewBag.Title = "Create Booking";
+}
+
+<h2>Create New Booking</h2>
+
+<hr />
+<form id="createBookingForm" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="AccountId"></label>
+        <select asp-for="AccountId" asp-items="ViewBag.Customers">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="AccountId"></span>
+    </div>
+
+    <div>
+        <label asp-for="PokemonName"></label>
+        <input asp-for="PokemonName" placeholder="e.g. Pikachu" />
+        <span asp-validation-for="PokemonName"></span>
+    </div>
+
+    <div>
+        <label asp-for="ServiceId"></label>
+        <select asp-for="ServiceId" id="ServiceId" asp-items="ViewBag.Services">
+            <option value="">-- Select Service --</option>
+        </select>
+        <span asp-validation-for="ServiceId"></span>
+    </div>
+
+    <div>
+        <label asp-for="RoomId"></label>
+        <select asp-for="RoomId" id="RoomId" asp-items="ViewBag.Rooms" disabled="@(Model.ServiceId <= 0 ? "disabled" : null)">
+            <option value="">@(Model.ServiceId > 0 ? "-- Select Room --" : "-- Please select a service first --")</option>
+        </select>
+        <span asp-validation-for="RoomId"></span>
+    </div>
+
+    <div>
+        <label asp-for="StaffId"></label>
+        <select asp-for="StaffId" asp-items="ViewBag.Staffs">
+            <option value="">-- Assign Staff --</option>
+        </select>
+        <span asp-validation-for="StaffId"></span>
+    </div>
+
+    <div>
+        <label asp-for="StartTime"></label>
+        <input asp-for="StartTime" type="datetime-local" value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="StartTime"></span>
+    </div>
+
+    <div>
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" rows="3" placeholder="Special requirements or allergies..."></textarea>
+        <span asp-validation-for="Notes"></span>
+    </div>
+
+    <br />
+    <div>
+        <button id="createBtn" type="submit">Create Booking</button>
+        <a asp-action="List">Back to List</a> |
+        <a asp-action="Index">Back to Dashboard</a>
+    </div>
+</form>
+
+@section foot {
+    <script>
+        const form = document.getElementById('createBookingForm');
+        const createBtn = document.getElementById('createBtn');
+        const serviceSelect = document.getElementById('ServiceId');
+        const roomSelect = document.getElementById('RoomId');
+
+        function updateRooms(serviceId, selectedRoomId) {
+            if (!serviceId) {
+                roomSelect.innerHTML = '<option value="">-- Please select a service first --</option>';
+                roomSelect.disabled = true;
+                return;
+            }
+
+            fetch(`/BookingManagement/GetRoomsByService?serviceId=${serviceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    roomSelect.innerHTML = '<option value="">-- Select Room --</option>';
+                    if (data && data.length > 0) {
+                        data.forEach(room => {
+                            const opt = document.createElement('option');
+                            opt.value = room.id;
+                            opt.textContent = room.name;
+                            if (selectedRoomId && room.id == selectedRoomId) {
+                                opt.selected = true;
+                            }
+                            roomSelect.appendChild(opt);
+                        });
+                        roomSelect.disabled = false;
+                    } else {
+                        roomSelect.innerHTML = '<option value="">-- No available rooms in this category --</option>';
+                        roomSelect.disabled = true;
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching rooms:', err);
+                });
+        }
+
+        serviceSelect.addEventListener('change', function() {
+            updateRooms(this.value, null);
+        });
+
+        // Initialize on page load if a service is already selected (e.g. on validation reload)
+        const initialServiceId = serviceSelect.value;
+        const initialRoomId = '@Model.RoomId';
+        if (initialServiceId) {
+            updateRooms(initialServiceId, initialRoomId > 0 ? initialRoomId : null);
+        }
+
+        createBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (!$(form).valid()) {
+                return;
+            }
+
+            Swal.fire({
+                title: 'Confirm Booking?',
+                text: "Are you sure you want to create this booking schedule?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, create booking!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+}

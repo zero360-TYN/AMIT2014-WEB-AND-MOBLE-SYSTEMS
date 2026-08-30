@@ -1,0 +1,77 @@
+@model Assignment.Models.ServiceDetailsViewModel
+
+@{
+    ViewBag.Title = "Service Details";
+}
+
+<h2>Service Details</h2>
+
+<div>
+    <hr />
+    <table class="simple-table">
+        <tbody>
+            <tr>
+                <th>Service ID</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Service Name</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>@Model.Description</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>@Model.Price.ToString("C", new System.Globalization.CultureInfo("en-MY"))</td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td>@Model.DurationMinutes minutes</td>
+            </tr>
+            <tr>
+                <th>Service Category</th>
+                <td>@Model.ServiceCategoryName</td>
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <button type="button" id="deleteBtn">Delete</button> |
+    <a asp-action="List">Back to list</a>
+</div>
+
+<form id="deleteForm" asp-action="Delete" method="post" style="display:none;">
+    <input type="hidden" name="id" value="@Model.Id" />
+</form>
+
+@section foot {
+    <script>
+        const deleteBtn = document.getElementById('deleteBtn');
+        const deleteForm = document.getElementById('deleteForm');
+
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `You are about to delete Service "${@Html.Raw(Json.Serialize(Model.Name))}". This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteForm.submit();
+                    }
+                });
+            });
+        }
+    </script>
+}

@@ -1,0 +1,22 @@
+@{
+    ViewBag.Title = "Booking Dashboard";
+}
+
+<h2>Booking Management Dashboard</h2>
+
+<p>Welcome to the Booking Management dashboard.</p>
+
+<div style="display: flex; gap: 15px; margin-bottom: 20px;">
+    <div><strong>Total:</strong> @ViewBag.TotalBookings</div>
+    <div><strong>Pending:</strong> @ViewBag.PendingBookings</div>
+    <div><strong>Confirmed:</strong> @ViewBag.ConfirmedBookings</div>
+    <div><strong>Completed:</strong> @ViewBag.CompletedBookings</div>
+    <div><strong>Cancelled:</strong> @ViewBag.CancelledBookings</div>
+</div>
+
+<p>
+    <a asp-action="List" asp-controller="BookingManagement">View All Bookings</a> |
+    <a asp-action="List" asp-route-status="pending" asp-controller="BookingManagement">Pending Bookings</a> |
+    <a asp-action="List" asp-route-status="confirmed" asp-controller="BookingManagement">Confirmed Bookings</a> |
+    <a asp-action="Create" asp-controller="BookingManagement">Create New Booking</a>
+</p>

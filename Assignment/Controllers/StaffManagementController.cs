@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Controllers
@@ -77,14 +77,16 @@ namespace Assignment.Controllers
             return RedirectToAction("List");
         }
         //Access: StaffManagement/List
-        public IActionResult List()
+        public IActionResult List(string? search, string? searchBy)
         {
-            var staffs = db.Staffs.Include(s => s.Account)
+            var query = db.Staffs.Include(s => s.Account)
                                     .ThenInclude(a => a.AccountDetail)
                                   .Include(s => s.Account)
                                     .ThenInclude(a => a.AccountStatus)
                                   .Where(s => s.Account.AccountStatus.Status != AccountStatusType.deleted)
-                                  .ToList();
+                                  .SearchBy(search, searchBy);
+
+            var staffs = query.ToList();
 
             var tableData = new TableListingViewModel
             {
@@ -101,6 +103,12 @@ namespace Assignment.Controllers
                 };
                 tableData.Rows.Add(row);
             }
+
+            if (Request.IsAjax())
+            {
+                return PartialView("_TableList", tableData);
+            }
+
             return View(tableData);
         }
         //Access: StaffManagement/StaffDetails/{id}
