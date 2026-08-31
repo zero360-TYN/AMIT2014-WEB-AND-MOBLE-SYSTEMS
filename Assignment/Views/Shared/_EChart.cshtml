@@ -1,0 +1,35 @@
+@using System.Text.Json
+@model Assignment.Models.EChartViewModel
+
+<div id="@Model.ChartId" style="width: 100%; height: @Model.Height;"></div>
+
+<script>
+(function () {
+    function initChart() {
+        if (typeof echarts === 'undefined') {
+            setTimeout(initChart, 30);
+            return;
+        }
+
+        const chartDom = document.getElementById('@Model.ChartId');
+        if (!chartDom) return;
+
+        let myChart = echarts.getInstanceByDom(chartDom);
+        if (!myChart) {
+            myChart = echarts.init(chartDom);
+            window.addEventListener('resize', function () {
+                myChart.resize();
+            });
+        }
+
+        const option = @Html.Raw(JsonSerializer.Serialize(Model.Option));
+        myChart.setOption(option, true);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChart);
+    } else {
+        initChart();
+    }
+})();
+</script>

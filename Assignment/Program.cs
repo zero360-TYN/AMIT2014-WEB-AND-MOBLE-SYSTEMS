@@ -1,5 +1,6 @@
 global using Assignment;
 global using Assignment.Models;
+global using Assignment.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Assignment.Data;
 

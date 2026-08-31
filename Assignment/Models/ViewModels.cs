@@ -275,4 +275,22 @@ namespace Assignment.Models
         [DisplayName("Created At")]
         public DateTime CreatedAt { get; set; }
     }
+
+    // Universal ECharts ViewModel (Supports Line, Bar, Pie, Doughnut, Radar, etc.)
+    public class EChartViewModel
+    {
+        public string ChartId { get; set; } = "echart_" + Guid.NewGuid().ToString("N")[..8];
+        public string Height { get; set; } = "360px";
+        public object Option { get; set; } = new();
+
+        public EChartViewModel() { }
+
+        public EChartViewModel(object option, string height = "360px")
+        {
+            Option = option;
+            Height = height;
+        }
+    }
 }
+
+

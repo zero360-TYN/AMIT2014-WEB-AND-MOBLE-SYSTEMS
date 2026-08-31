@@ -22,6 +22,10 @@
     {
       "library": "sweetalert2@11.7.27",
       "files": [ "sweetalert2.all.min.js" ]
+    },
+    {
+      "library": "echarts@5.5.1",
+      "files": [ "echarts.min.js" ]
     }
   ]
 }

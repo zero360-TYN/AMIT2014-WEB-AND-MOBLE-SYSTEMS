@@ -1,0 +1,36 @@
+@model Assignment.Models.EChartViewModel
+
+@{
+    ViewBag.Title = "User Analytics";
+    int selectedYear = ViewBag.SelectedYear ?? DateTime.Today.Year;
+    var availableYears = ViewBag.AvailableYears as List<int> ?? new List<int> { selectedYear };
+}
+
+<h2>User Analytics</h2>
+<form data-ajax="true"
+      data-ajax-method="get"
+      data-ajax-url="@Url.Action("UserAnalytics", "Analytics")"
+      data-ajax-update="#chart-container"
+      data-ajax-mode="replace">
+    <label for="year">Select Year:</label>
+    <select name="year" id="year" onchange="$(this).closest('form').trigger('submit')">
+        @foreach (var y in availableYears)
+        {
+            if (y == selectedYear)
+            {
+                <option value="@y" selected>@y</option>
+            }
+            else
+            {
+                <option value="@y">@y</option>
+            }
+        }
+    </select>
+    <noscript>
+        <button type="submit">Filter</button>
+    </noscript>
+</form>
+
+<div id="chart-container">
+    <partial name="_EChart" model="Model" />
+</div>
