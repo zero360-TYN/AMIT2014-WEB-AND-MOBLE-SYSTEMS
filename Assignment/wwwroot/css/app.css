@@ -1,7 +1,12 @@
-﻿header {
+header {
 
 }
 
 footer {
     background-color: yellow;
 }
+
+.echart-container {
+    height: 400px;
+}
+

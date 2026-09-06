@@ -43,7 +43,6 @@ namespace Assignment.Helpers
             IEnumerable<string> xLabels,
             IEnumerable<EChartSeries> series,
             string? yAxisName = null,
-            string height = "380px",
             bool enableToolbox = true)
         {
             var seriesList = series.ToList();
@@ -89,7 +88,7 @@ namespace Assignment.Helpers
                 series = seriesObjects
             };
 
-            return new EChartViewModel(option, height);
+            return new EChartViewModel(option);
         }
 
         public static EChartViewModel CreateBarChart(
@@ -99,7 +98,6 @@ namespace Assignment.Helpers
             string? yAxisName = null,
             bool isHorizontal = false,
             bool isStacked = false,
-            string height = "380px",
             bool enableToolbox = true)
         {
             var seriesList = series.ToList();
@@ -147,14 +145,13 @@ namespace Assignment.Helpers
                 series = seriesObjects
             };
 
-            return new EChartViewModel(option, height);
+            return new EChartViewModel(option);
         }
 
         public static EChartViewModel CreatePieChart(
             string title,
             IEnumerable<KeyValuePair<string, decimal>> data,
             bool isDonut = true,
-            string height = "380px",
             bool enableToolbox = true)
         {
             var dataItems = data.Select(kvp => new
@@ -190,28 +187,26 @@ namespace Assignment.Helpers
                 }
             };
 
-            return new EChartViewModel(option, height);
+            return new EChartViewModel(option);
         }
 
         public static EChartViewModel CreatePieChart(
             string title,
             IDictionary<string, decimal> data,
             bool isDonut = true,
-            string height = "380px",
             bool enableToolbox = true)
         {
-            return CreatePieChart(title, data.AsEnumerable(), isDonut, height, enableToolbox);
+            return CreatePieChart(title, data.AsEnumerable(), isDonut, enableToolbox);
         }
 
         public static EChartViewModel CreatePieChart(
             string title,
             IDictionary<string, int> data,
             bool isDonut = true,
-            string height = "380px",
             bool enableToolbox = true)
         {
             var decimalDict = data.ToDictionary(k => k.Key, v => (decimal)v.Value);
-            return CreatePieChart(title, decimalDict, isDonut, height, enableToolbox);
+            return CreatePieChart(title, decimalDict, isDonut, enableToolbox);
         }
     }
 }

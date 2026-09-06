@@ -51,9 +51,10 @@ namespace Assignment.Controllers
         }
 
         // Access: ServiceManagement/Create
-        public IActionResult Create()
+        public IActionResult Create(int? categoryId)
         {
             ViewBag.ServiceCategories = new SelectList(db.ServiceCategories, "Id", "Name");
+            ViewBag.SelectedCategory = categoryId.HasValue ? db.ServiceCategories.Find(categoryId.Value) : null;
             return View();
         }
 
@@ -241,6 +242,98 @@ namespace Assignment.Controllers
             TempData["AlertType"] = "success";
             TempData["AlertMessage"] = $"Service {service.Name} deleted successfully.";
             return RedirectToAction("List");
+        }
+
+        // Access: ServiceManagement/CreateServiceCategory
+        public IActionResult CreateServiceCategory()
+        {
+            return View();
+        }
+
+        // Access: ServiceManagement/CreateCategory
+        public IActionResult CreateCategory()
+        {
+            return RedirectToAction(nameof(CreateServiceCategory));
+        }
+
+        // POST: ServiceManagement/CreateServiceCategory
+        [HttpPost]
+        public IActionResult CreateServiceCategory(ServiceCategoryCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Check duplicate Category Name
+            var isDuplicate = db.ServiceCategories.Any(c => c.Name == model.Name);
+            if (isDuplicate)
+            {
+                ModelState.AddModelError("Name", "Service category name already exists.");
+                return View(model);
+            }
+
+            var category = new ServiceCategory
+            {
+                Name = model.Name,
+                Description = model.Description
+            };
+
+            db.ServiceCategories.Add(category);
+            db.SaveChanges();
+
+            TempData["AlertType"] = "success";
+            TempData["AlertMessage"] = $"Service category created successfully.";
+            return RedirectToAction("ServiceCategoryList");
+        }
+
+        // POST: ServiceManagement/CreateCategory
+        [HttpPost]
+        public IActionResult CreateCategory(ServiceCategoryCreateViewModel model)
+        {
+            return CreateServiceCategory(model);
+        }
+
+        // Access: ServiceManagement/ServiceCategoryList
+        public IActionResult ServiceCategoryList(string? search, string? searchBy)
+        {
+            var query = db.ServiceCategories
+                .Include(c => c.Services)
+                .SearchBy(search, searchBy);
+
+            var categories = query.ToList();
+
+            var tableData = new TableListingViewModel
+            {
+                Headers = new List<string> { "Category ID", "Name", "Description", "Services Count", "Actions" }
+            };
+
+            foreach (var c in categories)
+            {
+                var activeServiceCount = c.Services.Count(s => !s.IsDeleted);
+                var row = new List<string>
+                {
+                    c.Id.ToString(),
+                    c.Name,
+                    c.Description ?? "N/A",
+                    activeServiceCount.ToString(),
+                    $"<a href='/ServiceManagement/List?search={Uri.EscapeDataString(c.Name)}&searchBy=ServiceCategory.Name'>View Services</a> | <a href='/ServiceManagement/Create?categoryId={c.Id}'>Add Service</a>"
+                };
+                tableData.Rows.Add(row);
+            }
+
+            if (Request.IsAjax())
+            {
+                return PartialView("_TableList", tableData);
+            }
+
+            return View(tableData);
+        }
+
+        // Access: ServiceManagement/CategoryList (alias)
+        public IActionResult CategoryList(string? search, string? searchBy)
+        {
+            return ServiceCategoryList(search, searchBy);
         }
     }
 }

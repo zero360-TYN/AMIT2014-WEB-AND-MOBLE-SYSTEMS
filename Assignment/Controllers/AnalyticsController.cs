@@ -11,14 +11,12 @@ namespace Assignment.Controllers
             return RedirectToAction(nameof(UserAnalytics));
         }
 
-        // GET: /Analytics/UserAnalytics?year=2026
+        // GET: /Analytics/UserAnalytics?year=?
         public IActionResult UserAnalytics(int? year)
         {
             var selectedYear = year ?? DateTime.Today.Year;
 
-            var months = Enumerable.Range(1, 12)
-                .Select(m => CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(m))
-                .ToList();
+            var months = GetMonthsInList();
 
             var monthlyNewUsers = db.AccountDetails
                 .AsNoTracking()
@@ -54,8 +52,7 @@ namespace Assignment.Controllers
                     new("New Registered Users", newUsersSeries, color: "#3b82f6", area: true),
                     new("Active Booking Users", activeUsersSeries, color: "#10b981")
                 ],
-                yAxisName: "User Count",
-                height: "400px"
+                yAxisName: "User Count"
             );
 
             ViewBag.SelectedYear = selectedYear;
@@ -83,5 +80,14 @@ namespace Assignment.Controllers
 
             return View(chartModel);
         }
+
+        private IEnumerable<string> GetMonthsInList()
+        {
+            var months = Enumerable.Range(1, 12)
+                .Select(m => CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(m))
+                .ToList();
+            return months;
+        }
     }
+
 }

@@ -1,0 +1,27 @@
+@model TableListingViewModel
+
+@{
+    ViewBag.Title = "Service Category List";
+}
+
+<h2>Service Category Management</h2>
+
+<p>
+    <a asp-action="CreateServiceCategory">+ Create New Category</a> |
+    <a asp-action="List">View Services List</a>
+</p>
+
+<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+    Fields = new() {
+        { nameof(ServiceCategory.Id), "Category ID" },
+        { nameof(ServiceCategory.Name), "Category Name" },
+        { nameof(ServiceCategory.Description), "Description" }
+    }
+}' />
+
+<div id="table-container">
+    @Html.Partial("_TableList", Model)
+</div>
+
+<br />
+<a asp-action="Index">Back to Dashboard</a>

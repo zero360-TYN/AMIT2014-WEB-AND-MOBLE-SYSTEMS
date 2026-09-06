@@ -1,0 +1,80 @@
+@* Reusable Booking Detail Modal Component based on SweetAlert2 *@
+
+<script>
+    // Global reusable function to display rich, formatted booking details
+    window.showBookingDetailModal = function (eventOrData) {
+        if (!eventOrData) return;
+
+        // Support both DayPilot event arguments and direct business objects
+        const raw = eventOrData.data || eventOrData;
+        const bookingId = raw.bookingId || eventOrData.id || "N/A";
+        const status = raw.status || eventOrData.status || "N/A";
+
+        // Map status to badge styles
+        const badgeClasses = {
+            confirmed: "bg-primary text-white",
+            pending: "bg-warning text-dark",
+            completed: "bg-success text-white",
+            cancelled: "bg-danger text-white"
+        };
+        const badgeClass = badgeClasses[status.toLowerCase()] || "bg-secondary text-white";
+
+        // Format timestamps cleanly
+        const rawStart = raw.start || eventOrData.start || "";
+        const rawEnd = raw.end || eventOrData.end || "";
+        const startStr = rawStart ? rawStart.replace("T", " ").substring(0, 16) : "N/A";
+        const endStr = rawEnd ? rawEnd.replace("T", " ").substring(11, 16) : "N/A";
+
+        Swal.fire({
+            title: `Booking #${bookingId}`,
+            html: `
+                <div class="text-center mb-3">
+                    <span class="badge ${badgeClass} px-3 py-2 fs-6 text-uppercase">${status}</span>
+                </div>
+                <table class="table table-sm table-bordered text-start mb-0">
+                    <tbody>
+                        ${raw.roomNumber ? `
+                        <tr>
+                            <th style="width: 35%;" class="bg-light">Room</th>
+                            <td><strong>${raw.roomNumber}</strong></td>
+                        </tr>` : ''}
+                        <tr>
+                            <th style="width: 35%;" class="bg-light">Customer</th>
+                            <td>${raw.customerName || 'N/A'} ${raw.customerEmail ? `<br><small class="text-muted">${raw.customerEmail}</small>` : ''}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Pokemon</th>
+                            <td><strong>${raw.pokemonName || 'N/A'}</strong></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Service</th>
+                            <td>${raw.serviceName || eventOrData.text || 'N/A'}</td>
+                        </tr>
+                        ${raw.staffName ? `
+                        <tr>
+                            <th class="bg-light">Assigned Staff</th>
+                            <td>${raw.staffName}</td>
+                        </tr>` : ''}
+                        <tr>
+                            <th class="bg-light">Schedule</th>
+                            <td>${startStr} ~ ${endStr}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">Total Price</th>
+                            <td><strong class="text-success">${raw.totalPrice || 'N/A'}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'View Full Details',
+            cancelButtonText: 'Close',
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed && bookingId !== "N/A") {
+                window.location.href = `/BookingManagement/Details/${bookingId}`;
+            }
+        });
+    };
+</script>

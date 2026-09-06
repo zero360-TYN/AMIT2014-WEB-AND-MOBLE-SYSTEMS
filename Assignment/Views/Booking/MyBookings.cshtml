@@ -1,0 +1,79 @@
+@model List<Assignment.Models.MemberBookingHistoryItemViewModel>
+@using Assignment.Models
+@{
+    ViewBag.Title = "My Bookings";
+    var currentStatus = ViewBag.CurrentStatus as BookingStatus?;
+    var statusText = currentStatus?.ToString().ToUpper() ?? "ALL";
+}
+
+<h2>My Bookings - @statusText</h2>
+
+<div style="margin-bottom: 15px;">
+    <a asp-action="MyBookings">All</a> |
+    <a asp-action="MyBookings" asp-route-status="@BookingStatus.pending">Pending</a> |
+    <a asp-action="MyBookings" asp-route-status="@BookingStatus.confirmed">Confirmed</a> |
+    <a asp-action="MyBookings" asp-route-status="@BookingStatus.completed">Completed</a> |
+    <a asp-action="MyBookings" asp-route-status="@BookingStatus.cancelled">Cancelled</a>
+</div>
+
+<table class="simple-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Pokémon</th>
+            <th>Service</th>
+            <th>Room</th>
+            <th>Staff</th>
+            <th>Schedule</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var b in Model)
+            {
+                <tr>
+                    <td>@b.Id</td>
+                    <td><strong>@b.PokemonName</strong></td>
+                    <td>@b.ServiceName (@b.ServiceCategoryName)</td>
+                    <td>Room @b.RoomNumber (@b.RoomTypeName)</td>
+                    <td>@b.StaffName</td>
+                    <td>@b.StartTime.ToString("yyyy-MM-dd HH:mm") - @b.EndTime.ToString("HH:mm")</td>
+                    <td>@b.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</td>
+                    <td>@b.Status.ToString().ToUpper()</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@b.Id">Details</a>
+                        @if (b.Status == BookingStatus.pending)
+                        {
+                            <span> | </span>
+                            <a asp-controller="Payment" asp-action="Index" asp-route-bookingId="@b.Id">Pay Now</a>
+                        }
+                        @if (b.Status == BookingStatus.pending || (b.Status == BookingStatus.confirmed && b.StartTime > DateTime.Now))
+                        {
+                            <span> | </span>
+                            <form asp-action="Cancel" asp-route-id="@b.Id" method="post" style="display: inline;" onsubmit="return confirm('Cancel booking #@b.Id?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit">Cancel</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9" style="text-align: center;">No bookings found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+<div>
+    <a asp-action="Index">Create New Booking</a> |
+    <a asp-controller="Home" asp-action="Index">Back to Home</a>
+</div>

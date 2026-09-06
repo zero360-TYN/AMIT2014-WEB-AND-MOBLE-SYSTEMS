@@ -1,0 +1,50 @@
+@model Assignment.Models.Booking
+@using Assignment.Models
+@{
+    ViewBag.Title = $"Payment #{Model.Id}";
+}
+
+<h2>Payment (Placeholder)</h2>
+<p>Note: Payment module is handled by teammate. This is a placeholder screen.</p>
+<hr />
+
+<table class="simple-table">
+    <tbody>
+        <tr>
+            <th>Booking ID</th>
+            <td>#@Model.Id</td>
+        </tr>
+        <tr>
+            <th>Pokémon</th>
+            <td>@(Model.BookingDetail?.PokemonName ?? "N/A")</td>
+        </tr>
+        <tr>
+            <th>Service</th>
+            <td>@(Model.Service?.Name ?? "N/A")</td>
+        </tr>
+        <tr>
+            <th>Room</th>
+            <td>Room @(Model.Room?.RoomNumber ?? "N/A") (@(Model.Room?.RoomType?.Name ?? "N/A"))</td>
+        </tr>
+        <tr>
+            <th>Schedule</th>
+            <td>@Model.StartTime.ToString("yyyy-MM-dd HH:mm") - @Model.EndTime.ToString("HH:mm")</td>
+        </tr>
+        <tr>
+            <th>Total Amount</th>
+            <td><strong>@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<form asp-action="SimulateSuccess" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="bookingId" value="@Model.Id" />
+    <button type="submit">Simulate Payment Success</button>
+</form>
+
+<br />
+<div>
+    <a asp-controller="Booking" asp-action="MyBookings">Back to My Bookings</a>
+</div>

@@ -127,6 +127,15 @@ namespace Assignment.Controllers
                                   .ThenInclude(ad => ad.Role)
                           .Include(s => s.Account)
                               .ThenInclude(a => a.AccountStatus)
+                          .Include(s => s.HandledBookings)
+                              .ThenInclude(b => b.Service)
+                          .Include(s => s.HandledBookings)
+                              .ThenInclude(b => b.Account)
+                                  .ThenInclude(a => a.AccountDetail)
+                          .Include(s => s.HandledBookings)
+                              .ThenInclude(b => b.BookingDetail)
+                          .Include(s => s.HandledBookings)
+                              .ThenInclude(b => b.Room)
                           .FirstOrDefault(s => s.Id == id &&
                                           s.Account.AccountStatus.Status != AccountStatusType.deleted);
 
@@ -137,6 +146,38 @@ namespace Assignment.Controllers
                 return RedirectToAction("List");
             }
 
+            // Map handled bookings to calendar slot event items with structured metadata payload
+            var bookingEvents = (staff.HandledBookings ?? new List<Booking>())
+                .Select(b => new SlotEventData
+                {
+                    Id = b.Id.ToString(),
+                    // Concise and clean display on calendar grid
+                    Text = $"{b.Service?.Name ?? "Service"}",
+                    Start = b.StartTime,
+                    End = b.EndTime,
+                    Status = b.Status.ToString(),
+                    BackColor = b.Status switch
+                    {
+                        BookingStatus.confirmed => "#0d6efd", // Confirmed (Blue)
+                        BookingStatus.pending => "#ffc107",   // Pending (Amber)
+                        BookingStatus.completed => "#198754", // Completed (Green)
+                        BookingStatus.cancelled => "#dc3545", // Cancelled (Red)
+                        _ => "#6c757d"
+                    },
+                    // Detailed business metadata for clear modal presentation
+                    Data = new
+                    {
+                        bookingId = b.Id,
+                        customerName = b.Account?.AccountDetail?.Username ?? "N/A",
+                        customerEmail = b.Account?.Email ?? "N/A",
+                        pokemonName = b.BookingDetail?.PokemonName ?? "N/A",
+                        serviceName = b.Service?.Name ?? "N/A",
+                        roomNumber = b.Room != null ? $"Room {b.Room.RoomNumber}" : "N/A",
+                        totalPrice = b.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY")),
+                        status = b.Status.ToString()
+                    }
+                }).ToList();
+
             var vm = new StaffDetailsViewModel
             {
                 Id = staff.Id,
@@ -146,7 +187,8 @@ namespace Assignment.Controllers
                 AvatarIcon = staff.Account?.AccountDetail?.AvatarIcon ?? "N/A",
                 Status = staff.Account?.AccountStatus?.Status ?? AccountStatusType.active,
                 BlockingReason = staff.Account?.AccountStatus?.BlockingReason,
-                BlockBy = staff.Account?.AccountStatus?.BlockBy
+                BlockBy = staff.Account?.AccountStatus?.BlockBy,
+                BookingEvents = bookingEvents
             };
 
             return View(vm);

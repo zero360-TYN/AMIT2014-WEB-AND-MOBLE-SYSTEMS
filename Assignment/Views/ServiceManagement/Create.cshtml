@@ -32,9 +32,19 @@
     <div>
         <label asp-for="ServiceCategoryId"></label>
         <select asp-for="ServiceCategoryId" asp-items="ViewBag.ServiceCategories">
-            <option value="">-- Select Service Category --</option>
+            @{
+                 if (ViewBag.SelectedCategory != null)
+                 {
+                      <option value="@ViewBag.SelectedCategory.Id" selected>@ViewBag.SelectedCategory.Name</option>
+                 }
+                 else
+                 {
+                      <option value="">-- Select Service Category --</option>                    
+                 }
+             }
         </select>
         <span asp-validation-for="ServiceCategoryId"></span>
+        <a asp-action="CreateServiceCategory" style="margin-left: 8px;">+ New Category</a>
     </div>
     <br />
     <div>

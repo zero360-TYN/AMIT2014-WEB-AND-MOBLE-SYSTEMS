@@ -7,7 +7,7 @@ namespace Assignment.Controllers
 {
     public class BookingManagementController(DB db) : Controller
     {
-        // Auto-complete expired confirmed bookings on every action request
+        // Auto-update expired bookings (completed for confirmed, cancelled for pending) on every action request
         public override void OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context)
         {
             base.OnActionExecuting(context);

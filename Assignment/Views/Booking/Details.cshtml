@@ -1,0 +1,75 @@
+@model Assignment.Models.BookingDetailsViewModel
+@using Assignment.Models
+@{
+    ViewBag.Title = $"Booking Details #{Model.Id}";
+}
+
+<h2>Booking Details #@Model.Id</h2>
+
+<hr />
+<table class="simple-table">
+    <tbody>
+        <tr>
+            <th>Booking ID</th>
+            <td>@Model.Id</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><strong>@Model.Status.ToString().ToUpper()</strong></td>
+        </tr>
+        <tr>
+            <th>Pokémon Name</th>
+            <td><strong>@Model.PokemonName</strong></td>
+        </tr>
+        <tr>
+            <th>Special Notes</th>
+            <td>@(string.IsNullOrWhiteSpace(Model.Notes) ? "None" : Model.Notes)</td>
+        </tr>
+        <tr>
+            <th>Service</th>
+            <td>@Model.ServiceName (@Model.ServiceCategoryName)</td>
+        </tr>
+        <tr>
+            <th>Room</th>
+            <td>Room @Model.RoomNumber (@Model.RoomTypeName)</td>
+        </tr>
+        <tr>
+            <th>Assigned Staff</th>
+            <td>@Model.StaffName</td>
+        </tr>
+        <tr>
+            <th>Start Time</th>
+            <td>@Model.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+        <tr>
+            <th>End Time</th>
+            <td>@Model.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td><strong>@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
+        </tr>
+        <tr>
+            <th>Created At</th>
+            <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<div>
+    @if (Model.Status == BookingStatus.pending)
+    {
+        <a asp-controller="Payment" asp-action="Index" asp-route-bookingId="@Model.Id">Proceed to Payment</a>
+        <span> | </span>
+    }
+    @if (Model.Status == BookingStatus.pending || (Model.Status == BookingStatus.confirmed && Model.StartTime > DateTime.Now))
+    {
+        <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" style="display:inline;" onsubmit="return confirm('Cancel this booking?');">
+            @Html.AntiForgeryToken()
+            <button type="submit">Cancel Booking</button>
+        </form>
+        <span> | </span>
+    }
+    <a asp-action="MyBookings">Back to My Bookings</a>
+</div>

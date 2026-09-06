@@ -1,5 +1,10 @@
-﻿@{
+@{
     ViewBag.Title = "Index";
 }
 <p>Hello world</p> 
-<a asp-action="index" asp-controller="StaffManagement">Staff Management</a>
+<div>
+    <a asp-action="Index" asp-controller="Booking">Member Booking</a> |
+    <a asp-action="MyBookings" asp-controller="Booking">My Bookings</a> |
+    <a asp-action="Index" asp-controller="BookingManagement">Booking Management</a> |
+    <a asp-action="index" asp-controller="StaffManagement">Staff Management</a>
+</div>

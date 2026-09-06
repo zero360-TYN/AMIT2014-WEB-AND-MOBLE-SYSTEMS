@@ -58,23 +58,39 @@ public class DB(DbContextOptions options) : DbContext(options)
             .OnDelete(DeleteBehavior.Restrict);
     }
 
-    // Automatically update expired confirmed bookings to completed status
+    // Automatically update expired bookings:
+    // 1. Confirmed bookings past their end time are marked as completed
+    // 2. Pending bookings that reached their scheduled start time are marked as cancelled
     public int AutoCompleteExpiredBookings()
     {
         var now = DateTime.Now;
-        var expiredBookings = Bookings
+
+        // Auto-complete confirmed bookings that have ended
+        var confirmedExpired = Bookings
             .Where(b => b.Status == BookingStatus.confirmed && b.EndTime <= now)
             .ToList();
 
-        if (expiredBookings.Any())
+        foreach (var b in confirmedExpired)
         {
-            foreach (var b in expiredBookings)
-            {
-                b.Status = BookingStatus.completed;
-            }
+            b.Status = BookingStatus.completed;
+        }
+
+        // Auto-cancel pending bookings whose scheduled start time has arrived
+        var pendingExpired = Bookings
+            .Where(b => b.Status == BookingStatus.pending && b.StartTime <= now)
+            .ToList();
+
+        foreach (var b in pendingExpired)
+        {
+            b.Status = BookingStatus.cancelled;
+        }
+
+        var totalChanged = confirmedExpired.Count + pendingExpired.Count;
+        if (totalChanged > 0)
+        {
             SaveChanges();
         }
-        return expiredBookings.Count;
+        return totalChanged;
     }
 }
 //entity class------------------------------------------------------------------------------------------

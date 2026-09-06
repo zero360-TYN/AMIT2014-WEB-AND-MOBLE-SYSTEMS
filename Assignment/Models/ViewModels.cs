@@ -45,6 +45,8 @@ namespace Assignment.Models
         public AccountStatusType Status { get; set; }
         public string? BlockingReason { get; set; }
         public string? BlockBy { get; set; }
+        // Bookings handled by the staff member for the timetable
+        public List<SlotEventData> BookingEvents { get; set; } = [];
     }
 
     public class StaffEditViewModel
@@ -139,6 +141,18 @@ namespace Assignment.Models
 
         [DisplayName("Service Category")]
         public string? ServiceCategoryName { get; set; }
+    }
+
+    public class ServiceCategoryCreateViewModel
+    {
+        [Required(ErrorMessage = "Category Name is required.")]
+        [MaxLength(50, ErrorMessage = "Category Name cannot exceed 50 characters.")]
+        [DisplayName("Category Name")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Description is required.")]
+        [DisplayName("Description")]
+        public string Description { get; set; }
     }
 
     public class ServiceCreateViewModel
@@ -280,17 +294,86 @@ namespace Assignment.Models
     public class EChartViewModel
     {
         public string ChartId { get; set; } = "echart_" + Guid.NewGuid().ToString("N")[..8];
-        public string Height { get; set; } = "360px";
         public object Option { get; set; } = new();
 
         public EChartViewModel() { }
 
-        public EChartViewModel(object option, string height = "360px")
+        public EChartViewModel(object option)
         {
             Option = option;
-            Height = height;
         }
     }
+
+    // Room Type Details with Resources Timetable View Model
+    public class RoomTypeDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public decimal BasePrice { get; set; }
+        public string ServiceCategoryName { get; set; } = string.Empty;
+        public int TotalRooms { get; set; }
+        public DateTime SelectedDate { get; set; } = DateTime.Today;
+        public List<SlotResourceData> Resources { get; set; } = [];
+        public List<SlotEventData> Events { get; set; } = [];
+    }
+
+    // Member Step-by-Step Booking View Model
+    public class MemberBookingViewModel
+    {
+        [Required(ErrorMessage = "Please select a service.")]
+        [DisplayName("Service")]
+        public int ServiceId { get; set; }
+
+        [Required(ErrorMessage = "Please select a room.")]
+        [DisplayName("Room")]
+        public int RoomId { get; set; }
+
+        [Required(ErrorMessage = "Please select a start date and time.")]
+        [DisplayName("Start Time")]
+        public DateTime StartTime { get; set; } = DateTime.Today.AddDays(1).AddHours(10);
+
+        [DisplayName("Preferred Staff")]
+        public int? StaffId { get; set; }
+
+        [Required(ErrorMessage = "Please enter your Pokémon's name.")]
+        [MaxLength(50, ErrorMessage = "Pokémon name cannot exceed 50 characters.")]
+        [DisplayName("Pokémon Name")]
+        public string PokemonName { get; set; } = string.Empty;
+
+        [MaxLength(255, ErrorMessage = "Notes cannot exceed 255 characters.")]
+        [DisplayName("Special Notes / Instructions")]
+        public string? Notes { get; set; }
+    }
+
+    // Time Slot availability representation for dynamic booking slot picker
+    public class TimeSlotOptionViewModel
+    {
+        public string Time { get; set; } = string.Empty;
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public bool IsAvailable { get; set; }
+        public string? Reason { get; set; }
+    }
+
+    // Member Booking History item
+    public class MemberBookingHistoryItemViewModel
+    {
+        public int Id { get; set; }
+        public string PokemonName { get; set; } = string.Empty;
+        public string ServiceName { get; set; } = string.Empty;
+        public string ServiceCategoryName { get; set; } = string.Empty;
+        public string RoomNumber { get; set; } = string.Empty;
+        public string RoomTypeName { get; set; } = string.Empty;
+        public string StaffName { get; set; } = string.Empty;
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public BookingStatus Status { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? Notes { get; set; }
+    }
 }
+
 
 

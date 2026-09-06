@@ -26,6 +26,10 @@
     {
       "library": "echarts@5.5.1",
       "files": [ "echarts.min.js" ]
+    },
+    {
+      "library": "daypilot-javascript.min@2024.1.3870",
+      "files": [ "daypilot-all.min.js" ]
     }
   ]
 }
