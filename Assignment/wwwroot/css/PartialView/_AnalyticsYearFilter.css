@@ -1,0 +1,64 @@
+/* _AnalyticsYearFilter Component */
+.pk-year-filter {
+    display: inline-flex;
+    align-items: center;
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 8px;
+    padding: 6px 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    margin-bottom: 20px;
+}
+
+.pk-year-filter label {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-right: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pk-year-filter select {
+    appearance: none;
+    background-color: var(--pk-bg-soft);
+    border: 1px solid var(--pk-blue-200);
+    border-radius: 6px;
+    padding: 4px 28px 4px 12px;
+    font-family: var(--pk-font-sans);
+    font-weight: 500;
+    color: var(--pk-charcoal-dark);
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%230284c7' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 5px;
+}
+
+.pk-year-filter select:focus,
+.pk-year-filter select:hover {
+    border-color: var(--pk-blue-400);
+    box-shadow: var(--pk-glow-cyan);
+    background-color: var(--pk-bg-white);
+}
+
+.pk-year-filter button {
+    margin-left: 8px;
+    background: var(--pk-charcoal-dark);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.pk-year-filter button:hover {
+    background: var(--pk-blue-600);
+}

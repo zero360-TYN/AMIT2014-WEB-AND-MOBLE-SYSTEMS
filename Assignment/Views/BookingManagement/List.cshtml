@@ -3,33 +3,44 @@
 @{
     ViewBag.Title = "Booking List";
     var currentStatus = ViewBag.CurrentStatus?.ToString() ?? "All";
+    var currentStatusNormalized = currentStatus.ToLower();
 }
 
-<h2>Booking Management - @currentStatus</h2>
+<link rel="stylesheet" href="~/css/BookingManagement/List.css" asp-append-version="true" />
 
-<div style="margin-bottom: 15px;">
-    <a asp-action="List">All</a> |
-    <a asp-action="List" asp-route-status="pending">Pending</a> |
-    <a asp-action="List" asp-route-status="confirmed">Confirmed</a> |
-    <a asp-action="List" asp-route-status="completed">Completed</a> |
-    <a asp-action="List" asp-route-status="cancelled">Cancelled</a>
+<div class="pk-page-header">
+    <div>
+        <h2 class="pk-dashboard-title">
+            Booking Records (@currentStatus)
+        </h2>
+    </div>
+    
+    <div class="pk-status-nav">
+        <a asp-action="List" class="@(currentStatusNormalized == "all" ? "active" : "")">ALL</a>
+        <a asp-action="List" asp-route-status="pending" class="@(currentStatusNormalized == "pending" ? "active" : "")">PENDING</a>
+        <a asp-action="List" asp-route-status="confirmed" class="@(currentStatusNormalized == "confirmed" ? "active" : "")">CONFIRMED</a>
+        <a asp-action="List" asp-route-status="completed" class="@(currentStatusNormalized == "completed" ? "active" : "")">COMPLETED</a>
+        <a asp-action="List" asp-route-status="cancelled" class="@(currentStatusNormalized == "cancelled" ? "active" : "")">CANCELLED</a>
+    </div>
 </div>
 
-<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
-    Fields = new() {
-        { nameof(Booking.Id), "Booking ID" },
-        { $"{nameof(Booking.Account)}.{nameof(Account.AccountDetail)}.{nameof(AccountDetail.Username)}", "Customer Name" },
-        { $"{nameof(Booking.Staff)}.{nameof(Staff.Account)}.{nameof(AccountDetail.Username)}", "Staff Name" },
-        { nameof(BookingDetail.PokemonName), "Pokemon Name" },
-        { nameof(Service.Name), "Service" },
-        { nameof(Room.RoomNumber), "Room Number" }
-    }
-}' />
+<div style="margin-bottom: 24px;">
+    <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+        Fields = new() {
+            { nameof(Booking.Id), "Booking ID" },
+            { $"{nameof(Booking.Account)}.{nameof(Account.AccountDetail)}.{nameof(AccountDetail.Username)}", "Customer Name" },
+            { $"{nameof(Booking.Staff)}.{nameof(Staff.Account)}.{nameof(Account.AccountDetail)}.{nameof(AccountDetail.Username)}", "Staff Name" },
+            { $"{nameof(Booking.BookingDetail)}.{nameof(BookingDetail.PokemonName)}", "Pokémon Name" },
+            { $"{nameof(Booking.Service)}.{nameof(Service.Name)}", "Service" },
+            { $"{nameof(Booking.Room)}.{nameof(Room.RoomNumber)}", "Room Number" }
+        }
+    }' />
+</div>
 
 <div id="table-container">
     @Html.Partial("_TableList", Model)
 </div>
 
-<br />
-<a asp-action="Create">Create New Booking</a> |
-<a asp-action="Index">Back to Dashboard</a>
+<div class="pk-actions-bottom">
+    <a asp-action="Index" class="pk-btn-outline">Back to Dashboard</a>
+</div>

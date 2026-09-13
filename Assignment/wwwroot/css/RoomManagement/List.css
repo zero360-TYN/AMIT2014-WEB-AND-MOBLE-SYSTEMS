@@ -1,0 +1,52 @@
+/* Room Management - List Styles */
+.pk-page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--pk-blue-200);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.pk-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 150px;
+    height: 2px;
+    background: var(--pk-blue-500);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.pk-dashboard-title {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    font-size: 2.2rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.pk-btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--pk-text-main) !important;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid #cbd5e1;
+    transition: all 0.2s ease;
+    margin-top: 24px;
+}
+.pk-btn-outline:hover {
+    background: var(--pk-bg-white);
+    color: var(--pk-charcoal-dark) !important;
+    border-color: #94a3b8;
+}
+
+.pk-btn-deleteBtn{
+    
+}

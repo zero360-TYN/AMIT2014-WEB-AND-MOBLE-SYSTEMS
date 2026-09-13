@@ -225,13 +225,13 @@ namespace Assignment.Models
         public DateTime CreatedAt { get; set; }
     }
 
-    public class BookingCreateViewModel
+    public class BookingCreateViewModel : IValidatableObject
     {
         [Required(ErrorMessage = "Customer is required.")]
         [DisplayName("Customer")]
         public int AccountId { get; set; }
 
-        [Required(ErrorMessage = "Staff is required.")]
+        [Required(ErrorMessage = "Staff assignment is required.")]
         [DisplayName("Assigned Staff")]
         public int StaffId { get; set; }
 
@@ -255,6 +255,19 @@ namespace Assignment.Models
         [MaxLength(255)]
         [DisplayName("Notes / Special Requests")]
         public string? Notes { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartTime < DateTime.Now.AddMinutes(-5))
+            {
+                yield return new ValidationResult("Booking start time cannot be in the past. Please select a future date and time.", new[] { nameof(StartTime) });
+            }
+
+            if (StartTime.Hour < 8 || StartTime.Hour >= 18)
+            {
+                yield return new ValidationResult("Booking start time must be within business hours (08:00 - 18:00).", new[] { nameof(StartTime) });
+            }
+        }
     }
 
     public class BookingDetailsViewModel
@@ -304,6 +317,15 @@ namespace Assignment.Models
         }
     }
 
+    // Shared model for analytics pages that have one or two ECharts and a year filter.
+    public class AnalyticsChartsViewModel
+    {
+        public EChartViewModel PrimaryChart { get; set; } = new();
+        public EChartViewModel? SecondaryChart { get; set; }
+        public int SelectedYear { get; set; }
+        public List<int> AvailableYears { get; set; } = [];
+    }
+
     // Room Type Details with Resources Timetable View Model
     public class RoomTypeDetailsViewModel
     {
@@ -319,7 +341,7 @@ namespace Assignment.Models
     }
 
     // Member Step-by-Step Booking View Model
-    public class MemberBookingViewModel
+    public class MemberBookingViewModel : IValidatableObject
     {
         [Required(ErrorMessage = "Please select a service.")]
         [DisplayName("Service")]
@@ -344,6 +366,19 @@ namespace Assignment.Models
         [MaxLength(255, ErrorMessage = "Notes cannot exceed 255 characters.")]
         [DisplayName("Special Notes / Instructions")]
         public string? Notes { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartTime < DateTime.Now.AddMinutes(-5))
+            {
+                yield return new ValidationResult("Booking start time cannot be in the past. Please select a future date and time.", new[] { nameof(StartTime) });
+            }
+
+            if (StartTime.Hour < 8 || StartTime.Hour >= 18)
+            {
+                yield return new ValidationResult("Booking start time must be within business hours (08:00 - 18:00).", new[] { nameof(StartTime) });
+            }
+        }
     }
 
     // Time Slot availability representation for dynamic booking slot picker
@@ -355,6 +390,7 @@ namespace Assignment.Models
         public bool IsAvailable { get; set; }
         public string? Reason { get; set; }
     }
+
 
     // Member Booking History item
     public class MemberBookingHistoryItemViewModel
@@ -373,7 +409,15 @@ namespace Assignment.Models
         public DateTime CreatedAt { get; set; }
         public string? Notes { get; set; }
     }
+
+    public class AnalyticsDashboardViewModel
+    {
+        public int ServiceCategoryCount { get; set; }
+        public int ServiceCount { get; set; }
+        public int RoomTypeCount { get; set; }
+        public int RoomCount { get; set; }
+        public Dictionary<string, int> AccountRoleCounts { get; set; } = [];
+        public Dictionary<BookingStatus, int> BookingStatusCounts { get; set; } = [];
+        public int TotalBookings { get; set; }
+    }
 }
-
-
-

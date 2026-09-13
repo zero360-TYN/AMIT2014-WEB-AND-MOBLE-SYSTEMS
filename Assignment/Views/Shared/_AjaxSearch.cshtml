@@ -6,11 +6,14 @@
     var searchBy = Context.Request.Query["searchBy"].ToString();
 }
 
+<link rel="stylesheet" href="~/css/PartialView/_AjaxSearch.css" asp-append-version="true" />
+
 <form data-ajax="true"
       data-ajax-method="get"
       data-ajax-url="@url"
       data-ajax-update="@Model.Target"
-      data-ajax-mode="replace">
+      data-ajax-mode="replace"
+      class="pk-search-card">
 
     <!-- Automatically preserve other existing query parameters (e.g. status, categoryId, etc.) -->
     @foreach (var key in Context.Request.Query.Keys)
@@ -25,7 +28,7 @@
         }
     }
 
-    <select name="searchBy">
+    <select name="searchBy" class="pk-search-select">
         <option value="">-- All --</option>
         @foreach (var (field, displayName) in Model.Fields)
         {
@@ -41,8 +44,8 @@
         }
     </select>
 
-    <input type="text" name="search" value="@search"
-           placeholder="Type to search..." autocomplete="off" />
+    <input type="text" name="search" value="@search" class="pk-search-input"
+           placeholder="Search database..." autocomplete="off" />
 
-    <button type="submit">Search</button>
+    <button type="submit" class="pk-search-btn">Search</button>
 </form>

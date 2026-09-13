@@ -1,0 +1,21 @@
+@model AnalyticsChartsViewModel
+@{
+    ViewBag.Title = "Booking Performance";
+}
+
+<link rel="stylesheet" href="~/css/Analytics/BookingAnalytics.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        <span class="pk-module-label">:: PKMN_SYS // MODULE_BOOKING_PERFORMANCE</span>
+        Booking Performance
+    </h2>
+</div>
+
+<partial name="_AnalyticsNavigation" />
+<partial name="_AnalyticsYearFilter" model="Model" />
+
+<div class="pk-charts-grid">
+    <partial name="_EChart" model="Model.PrimaryChart" />
+    <partial name="_EChart" model="Model.SecondaryChart" />
+</div>

@@ -4,37 +4,49 @@
     ViewBag.Title = "Edit Room Type";
 }
 
-<h2>Edit Room Type</h2>
+<link rel="stylesheet" href="~/css/RoomManagement/Form.css" asp-append-version="true" />
 
-<hr />
-<form id="editRoomTypeForm" asp-action="EditRoomType" method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-    <input type="hidden" asp-for="Id" />
-    <div>
-        <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
-    </div>
-    <div>
-        <label asp-for="Description"></label>
-        <input asp-for="Description" />
-        <span asp-validation-for="Description"></span>
-    </div>
-    <div>
-        <label asp-for="BasePrice"></label>
-        <input asp-for="BasePrice" type="number" step="0.01" />
-        <span asp-validation-for="BasePrice"></span>
-    </div>
-    <div>
-        <label asp-for="ServiceCategoryName"></label>
-        <input asp-for="ServiceCategoryName" readonly disabled />
-    </div>
-    <br />
-    <div>
-        <button id="saveBtn" type="submit">Save Changes</button>
-        <a asp-action="RoomTypeList">Cancel</a>
-    </div>
-</form>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Modify Room Type
+    </h2>
+</div>
+
+<div class="pk-form-panel">
+    <form id="editRoomTypeForm" asp-action="EditRoomType" method="post">
+        <div asp-validation-summary="ModelOnly" style="color: #ef4444; margin-bottom: 16px;"></div>
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="pk-form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"></textarea>
+            <span asp-validation-for="Description" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="BasePrice"></label>
+            <input asp-for="BasePrice" type="number" step="0.01" />
+            <span asp-validation-for="BasePrice" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label>Service Category</label>
+            <input type="text" value="@Model.ServiceCategoryName" readonly style="background-color: #e2e8f0; cursor: not-allowed;" />
+            <span class="small text-muted" style="font-size: 0.85rem; color: var(--pk-charcoal-light);">Category cannot be changed after creation.</span>
+        </div>
+        
+        <div class="pk-actions-bar">
+            <button id="saveBtn" type="submit" class="pk-btn-submit">Save Changes</button>
+            <a asp-action="RoomTypeList" class="pk-btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
 
 @section foot {
     <script>
@@ -51,21 +63,23 @@
             const newFormData = new URLSearchParams(new FormData(form)).toString();
             if (newFormData === currentFormData) {
                 Swal.fire({
-                    title: 'No changes to save',
+                    title: 'No changes',
                     text: "There are no changes to save.",
-                    icon: 'info'
+                    icon: 'info',
+                    customClass: { popup: 'pk-swal-modal' }
                 });
                 return;
             }
 
             Swal.fire({
-                title: 'Are you sure?',
+                title: 'Save Changes?',
                 text: "You are about to save changes to this room type.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
+                confirmButtonColor: 'var(--pk-blue-500)',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, save it!',
+                customClass: { popup: 'pk-swal-modal' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

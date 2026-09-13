@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment.Models;
@@ -37,7 +37,7 @@ namespace Assignment.Controllers
                     s.ServiceCategory?.Name ?? "N/A",
                     s.Price.ToString("C", new System.Globalization.CultureInfo("en-MY")),
                     $"{s.DurationMinutes} mins",
-                    $"<a href='/ServiceManagement/Details/{s.Id}'>Details</a> | <a href='/ServiceManagement/Edit/{s.Id}'>Edit</a> | <button type='button' class='btn-delete' data-id='{s.Id}' data-name='{s.Name}'>Delete</button>"
+                    $"<a href='/ServiceManagement/Details/{s.Id}' class='pk-action-link'>Details</a> <a href='/ServiceManagement/Edit/{s.Id}' class='pk-action-link'>Edit</a> <button type='button' class='btn-delete pk-action-btn' data-id='{s.Id}' data-name='{s.Name}'>Delete</button>"
                 };
                 tableData.Rows.Add(row);
             }

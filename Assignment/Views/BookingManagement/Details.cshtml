@@ -4,10 +4,15 @@
     ViewBag.Title = "Booking Details";
 }
 
-<h2>Booking Details #@Model.Id</h2>
+<link rel="stylesheet" href="~/css/BookingManagement/Details.css" asp-append-version="true" />
 
-<div>
-    <hr />
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Booking Record #@Model.Id
+    </h2>
+</div>
+
+<div class="pk-details-card">
     <table class="simple-table">
         <tbody>
             <tr>
@@ -19,7 +24,7 @@
                 <td>@Model.CustomerName (@Model.CustomerEmail)</td>
             </tr>
             <tr>
-                <th>Pokemon Name</th>
+                <th>Pokémon Name</th>
                 <td><strong>@Model.PokemonName</strong></td>
             </tr>
             <tr>
@@ -48,11 +53,16 @@
             </tr>
             <tr>
                 <th>Status</th>
-                <td><strong>@Model.Status.ToString().ToUpper()</strong></td>
+                @{
+                    string badgeColor = Model.Status == Assignment.Models.BookingStatus.confirmed ? "var(--pk-blue-500)" :
+                                        Model.Status == Assignment.Models.BookingStatus.pending ? "#f59e0b" :
+                                        Model.Status == Assignment.Models.BookingStatus.completed ? "#10b981" : "#ef4444";
+                }
+                <td><strong style="color: @badgeColor;">@Model.Status.ToString().ToUpper()</strong></td>
             </tr>
             <tr>
                 <th>Total Price</th>
-                <td><strong>@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
+                <td><strong style="color: #10b981;">@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
             </tr>
             <tr>
                 <th>Booked At</th>
@@ -60,7 +70,8 @@
             </tr>
         </tbody>
     </table>
+</div>
 
-    <br />
-    <a asp-action="List">Back to List</a>
+<div class="pk-actions-bottom">
+    <a asp-action="List" class="pk-btn-outline">Back to List</a>
 </div>

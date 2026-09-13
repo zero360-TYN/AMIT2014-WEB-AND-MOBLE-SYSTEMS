@@ -1,82 +1,77 @@
-@model RoomTypeDetailsViewModel
+﻿@model RoomTypeDetailsViewModel
 
 @{
     ViewBag.Title = $"{Model.Name} - Room Type Details";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Room Type Details - @Model.Name</h2>
-        <div>
-            <a asp-action="RoomTypeList" class="btn btn-secondary btn-sm">Back to Room Type List</a>
-            <a asp-action="EditRoomType" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit Room Type</a>
-        </div>
-    </div>
+<link rel="stylesheet" href="~/css/RoomManagement/Details.css" asp-append-version="true" />
 
-    <!-- Room Type Profile Summary Card -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <strong>Category:</strong>
-                    <p class="text-muted mb-1">@Model.ServiceCategoryName</p>
-                </div>
-                <div class="col-md-3">
-                    <strong>Base Price:</strong>
-                    <p class="text-muted mb-1">@Model.BasePrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</p>
-                </div>
-                <div class="col-md-3">
-                    <strong>Total Active Rooms:</strong>
-                    <p class="text-muted mb-1">@Model.TotalRooms room(s)</p>
-                </div>
-                <div class="col-md-3">
-                    <strong>Description:</strong>
-                    <p class="text-muted mb-1">@(string.IsNullOrWhiteSpace(Model.Description) ? "N/A" : Model.Description)</p>
-                </div>
-            </div>
-        </div>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Room Type: @Model.Name
+    </h2>
+    <div>
+        <a asp-action="RoomTypeList" class="pk-btn-outline">Back to Room Type List</a>
+        <a asp-action="EditRoomType" asp-route-id="@Model.Id" class="pk-btn-primary">Edit Room Type</a>
     </div>
+</div>
 
-    <!-- Daily Room Schedule (Resources View) -->
-    <div class="card shadow-sm mb-3">
-        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
-            <h5 class="m-0 text-primary">Daily Room Timetable</h5>
-            <div class="d-flex align-items-center gap-2">
-                <label for="roomTypeDateSelector" class="small fw-bold text-secondary text-nowrap m-0">Go to Date:</label>
-                <input type="date" id="roomTypeDateSelector" class="form-control form-control-sm"
-                       value="@Model.SelectedDate.ToString("yyyy-MM-dd")" style="width: 160px;" />
-            </div>
+<div class="pk-details-card">
+    <div class="pk-details-grid">
+        <div class="pk-detail-item">
+            <strong>Category</strong>
+            <p>@Model.ServiceCategoryName</p>
         </div>
-        <div class="card-body p-2">
-            @if (Model.Resources.Any())
-            {
-                <partial name="_VisualSlotTable" model='new VisualSlotTableConfig {
-                    Id = "roomtype_timetable_" + Model.Id,
-                    ViewType = SlotViewType.Resources,
-                    IsReadOnly = true,
-                    StartDate = Model.SelectedDate,
-                    BusinessBeginsHour = 8,
-                    BusinessEndsHour = 20,
-                    CellDuration = 60,
-                    Resources = Model.Resources,
-                    Events = Model.Events,
-                    OnEventClick = "showBookingDetailModal"
-                }' />
-            }
-            else
-            {
-                <div class="alert alert-info m-3" role="alert">
-                    <i class="bi bi-info-circle"></i> No active rooms are currently assigned to this room type.
-                </div>
-            }
+        <div class="pk-detail-item">
+            <strong>Base Price</strong>
+            <p style="color: #10b981;">@Model.BasePrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</p>
+        </div>
+        <div class="pk-detail-item">
+            <strong>Total Active Rooms</strong>
+            <p style="color: var(--pk-blue-600);">@Model.TotalRooms room(s)</p>
+        </div>
+        <div class="pk-detail-item">
+            <strong>Description</strong>
+            <p>@(string.IsNullOrWhiteSpace(Model.Description) ? "N/A" : Model.Description)</p>
         </div>
     </div>
+</div>
+
+<div class="pk-schedule-control">
+    <h3>Daily Room Timetable</h3>
+    <div class="pk-date-picker-wrap">
+        <label for="roomTypeDateSelector">Go to Date:</label>
+        <input type="date" id="roomTypeDateSelector" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+    </div>
+</div>
+
+<div style="background: var(--pk-bg-white); padding: 20px; border-radius: 12px; border: var(--pk-border-soft); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+    @if (Model.Resources.Any())
+    {
+        <partial name="_VisualSlotTable" model='new VisualSlotTableConfig {
+            Id = "roomtype_timetable_" + Model.Id,
+            ViewType = SlotViewType.Resources,
+            IsReadOnly = true,
+            StartDate = Model.SelectedDate,
+            BusinessBeginsHour = 8,
+            BusinessEndsHour = 20,
+            CellDuration = 60,
+            Resources = Model.Resources,
+            Events = Model.Events,
+            OnEventClick = "showBookingDetailModal"
+        }' />
+    }
+    else
+    {
+        <div style="color: var(--pk-charcoal-light); font-style: italic; padding: 20px 0;">
+            No active rooms are currently assigned to this room type.
+        </div>
+    }
 </div>
 
 <partial name="_BookingDetailModal" />
 
 <script>
-    // Synchronize datepicker selection with the DayPilot Resources timetable
     document.getElementById("roomTypeDateSelector")?.addEventListener("change", function () {
         const handle = window["slotTable_roomtype_timetable_@Model.Id"];
         if (handle && this.value) {

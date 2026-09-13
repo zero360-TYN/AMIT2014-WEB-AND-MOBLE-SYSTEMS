@@ -1,7 +1,11 @@
 @using System.Text.Json
 @model Assignment.Models.EChartViewModel
 
-<div id="@Model.ChartId" class="echart-container" style="width: 100%;"></div>
+<link rel="stylesheet" href="~/css/PartialView/_EChart.css" asp-append-version="true" />
+
+<div class="pk-chart-card">
+    <div id="@Model.ChartId" class="echart-container" style="width: 100%;"></div>
+</div>
 
 <script>
 (function () {

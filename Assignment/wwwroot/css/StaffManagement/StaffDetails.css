@@ -1,0 +1,199 @@
+/* Staff Management - StaffDetails Styles */
+.pk-page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--pk-blue-200);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.pk-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 150px;
+    height: 2px;
+    background: var(--pk-blue-500);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.pk-dashboard-title {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    font-size: 2.2rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.pk-profile-card {
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.pk-profile-card::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 200px;
+    height: 200px;
+    background-image: var(--pk-watermark);
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.pk-profile-avatar-sec {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    background: var(--pk-bg-soft);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px dashed var(--pk-blue-300);
+    min-width: 180px;
+}
+
+.pk-profile-avatar-sec img {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    object-fit: contain;
+    background-color: var(--pk-bg-white);
+    border: 4px solid var(--pk-bg-white);
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
+    margin-bottom: 16px;
+}
+
+.pk-profile-avatar-sec h2 {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    margin: 0 0 8px 0;
+    font-size: 1.4rem;
+}
+
+.pk-profile-avatar-sec span {
+    background: var(--pk-blue-100);
+    color: var(--pk-blue-600);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pk-profile-details {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.pk-profile-details .simple-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pk-profile-details .simple-table th {
+    text-align: left;
+    padding: 12px 16px;
+    color: var(--pk-charcoal-light);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid var(--pk-blue-100);
+    width: 35%;
+}
+
+.pk-profile-details .simple-table td {
+    padding: 12px 16px;
+    color: var(--pk-text-main);
+    border-bottom: 1px solid var(--pk-blue-100);
+    font-weight: 600;
+}
+
+.pk-actions-bar {
+    margin-top: 24px;
+    display: flex;
+    gap: 16px;
+}
+
+.pk-btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pk-blue-500), var(--pk-blue-600));
+    color: white !important;
+    text-decoration: none;
+    padding: 8px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: var(--pk-glow-blue);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.pk-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--pk-glow-cyan-strong);
+}
+
+.pk-btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--pk-text-main) !important;
+    text-decoration: none;
+    padding: 8px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid #cbd5e1;
+    transition: all 0.2s ease;
+}
+.pk-btn-outline:hover {
+    background: var(--pk-bg-white);
+    color: var(--pk-charcoal-dark) !important;
+    border-color: #94a3b8;
+}
+
+/* Schedule Section */
+.pk-schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--pk-blue-200);
+}
+.pk-schedule-header h3 {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    margin: 0;
+    font-size: 1.6rem;
+}
+.pk-schedule-header span {
+    font-family: var(--pk-font-sans);
+    color: var(--pk-blue-600);
+    font-weight: 600;
+    background: var(--pk-blue-50);
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--pk-blue-200);
+}

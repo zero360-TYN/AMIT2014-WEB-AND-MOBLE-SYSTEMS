@@ -1,0 +1,20 @@
+@model AnalyticsChartsViewModel
+@{
+    ViewBag.Title = "Room Usage";
+}
+
+<link rel="stylesheet" href="~/css/Analytics/RoomAnalytics.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        <span class="pk-module-label">:: PKMN_SYS // MODULE_FACILITY_MONITOR</span>
+        Room Usage
+    </h2>
+</div>
+
+<partial name="_AnalyticsNavigation" />
+<partial name="_AnalyticsYearFilter" model="Model" />
+
+<div class="pk-charts-container">
+    <partial name="_EChart" model="Model.PrimaryChart" />
+</div>

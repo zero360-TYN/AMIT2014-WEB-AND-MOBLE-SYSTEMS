@@ -6,13 +6,24 @@
     var availableYears = ViewBag.AvailableYears as List<int> ?? new List<int> { selectedYear };
 }
 
-<h2>User Analytics</h2>
+<link rel="stylesheet" href="~/css/Analytics/UserAnalytics.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        <span class="pk-module-label">:: PKMN_SYS // TRAINER_DEMOGRAPHICS</span>
+        User Analytics
+    </h2>
+</div>
+
+<partial name="_AnalyticsNavigation" />
+
 <form data-ajax="true"
       data-ajax-method="get"
       data-ajax-url="@Url.Action("UserAnalytics", "Analytics")"
       data-ajax-update="#chart-container"
-      data-ajax-mode="replace">
-    <label for="year">Select Year:</label>
+      data-ajax-mode="replace"
+      class="pk-custom-filter-form">
+    <label for="year">Temporal Cycle:</label>
     <select name="year" id="year" onchange="$(this).closest('form').trigger('submit')">
         @foreach (var y in availableYears)
         {
@@ -31,6 +42,6 @@
     </noscript>
 </form>
 
-<div id="chart-container">
+<div id="chart-container" class="pk-charts-container">
     <partial name="_EChart" model="Model" />
 </div>

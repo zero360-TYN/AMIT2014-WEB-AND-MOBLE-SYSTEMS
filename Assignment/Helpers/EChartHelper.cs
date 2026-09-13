@@ -98,7 +98,8 @@ namespace Assignment.Helpers
             string? yAxisName = null,
             bool isHorizontal = false,
             bool isStacked = false,
-            bool enableToolbox = true)
+            bool enableToolbox = true,
+            bool enableLineSwitch = true)
         {
             var seriesList = series.ToList();
             var legendData = seriesList.Select(s => s.Name).ToArray();
@@ -135,7 +136,7 @@ namespace Assignment.Helpers
                 {
                     feature = new
                     {
-                        magicType = new { type = new[] { "bar", "line" } },
+                        magicType = enableLineSwitch ? new { type = new[] { "bar", "line" } } : null,
                         dataView = new { readOnly = true },
                         saveAsImage = new { }
                     }

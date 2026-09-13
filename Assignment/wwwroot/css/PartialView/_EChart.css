@@ -1,0 +1,40 @@
+/* _EChart Component */
+.pk-chart-card {
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pk-chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pk-blue-400), transparent);
+    opacity: 0.8;
+}
+
+.pk-chart-card::after {
+    content: '';
+    position: absolute;
+    bottom: -5%;
+    right: -2%;
+    width: 250px;
+    height: 250px;
+    background-image: var(--pk-watermark);
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.echart-container {
+    position: relative;
+    z-index: 1;
+    /* Height is already set in app.css or inline, keeping it flexible */
+}

@@ -1,75 +1,106 @@
-@model Assignment.Models.BookingDetailsViewModel
+﻿@model Assignment.Models.BookingDetailsViewModel
 @using Assignment.Models
 @{
     ViewBag.Title = $"Booking Details #{Model.Id}";
 }
 
-<h2>Booking Details #@Model.Id</h2>
+<link rel="stylesheet" href="~/css/Booking/Details.css" asp-append-version="true" />
 
-<hr />
-<table class="simple-table">
-    <tbody>
-        <tr>
-            <th>Booking ID</th>
-            <td>@Model.Id</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td><strong>@Model.Status.ToString().ToUpper()</strong></td>
-        </tr>
-        <tr>
-            <th>Pokémon Name</th>
-            <td><strong>@Model.PokemonName</strong></td>
-        </tr>
-        <tr>
-            <th>Special Notes</th>
-            <td>@(string.IsNullOrWhiteSpace(Model.Notes) ? "None" : Model.Notes)</td>
-        </tr>
-        <tr>
-            <th>Service</th>
-            <td>@Model.ServiceName (@Model.ServiceCategoryName)</td>
-        </tr>
-        <tr>
-            <th>Room</th>
-            <td>Room @Model.RoomNumber (@Model.RoomTypeName)</td>
-        </tr>
-        <tr>
-            <th>Assigned Staff</th>
-            <td>@Model.StaffName</td>
-        </tr>
-        <tr>
-            <th>Start Time</th>
-            <td>@Model.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
-        </tr>
-        <tr>
-            <th>End Time</th>
-            <td>@Model.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
-        </tr>
-        <tr>
-            <th>Total Price</th>
-            <td><strong>@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
-        </tr>
-        <tr>
-            <th>Created At</th>
-            <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
-        </tr>
-    </tbody>
-</table>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Booking Details #@Model.Id
+    </h2>
+</div>
 
-<br />
-<div>
+<div class="pk-details-card">
+    <table>
+        <tbody>
+            <tr>
+                <th>Booking ID</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><strong style="color: var(--pk-blue-600);">@Model.Status.ToString().ToUpper()</strong></td>
+            </tr>
+            <tr>
+                <th>Pokémon Name</th>
+                <td><strong>@Model.PokemonName</strong></td>
+            </tr>
+            <tr>
+                <th>Special Notes</th>
+                <td>@(string.IsNullOrWhiteSpace(Model.Notes) ? "None" : Model.Notes)</td>
+            </tr>
+            <tr>
+                <th>Service</th>
+                <td>@Model.ServiceName <span style="opacity:0.7;font-size:0.85em;">(@Model.ServiceCategoryName)</span></td>
+            </tr>
+            <tr>
+                <th>Room</th>
+                <td>Room @Model.RoomNumber <span style="opacity:0.7;font-size:0.85em;">(@Model.RoomTypeName)</span></td>
+            </tr>
+            <tr>
+                <th>Assigned Staff</th>
+                <td>@Model.StaffName</td>
+            </tr>
+            <tr>
+                <th>Start Time</th>
+                <td>@Model.StartTime.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+            <tr>
+                <th>End Time</th>
+                <td>@Model.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td><strong style="color: #10b981;">@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td><span style="opacity:0.8;font-size:0.9em;">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="pk-actions">
     @if (Model.Status == BookingStatus.pending)
     {
-        <a asp-controller="Payment" asp-action="Index" asp-route-bookingId="@Model.Id">Proceed to Payment</a>
-        <span> | </span>
+        <a asp-controller="FakePayment" asp-action="Index" asp-route-bookingId="@Model.Id" class="pk-btn-primary">Proceed to Payment</a>
     }
     @if (Model.Status == BookingStatus.pending || (Model.Status == BookingStatus.confirmed && Model.StartTime > DateTime.Now))
     {
-        <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" style="display:inline;" onsubmit="return confirm('Cancel this booking?');">
+        <form id="cancelBookingForm" asp-action="Cancel" asp-route-id="@Model.Id" method="post" style="display:inline; margin:0;">
             @Html.AntiForgeryToken()
-            <button type="submit">Cancel Booking</button>
+            <button type="button" id="btnCancelBooking" class="pk-btn-danger">Cancel Booking</button>
         </form>
-        <span> | </span>
     }
-    <a asp-action="MyBookings">Back to My Bookings</a>
+    <a asp-action="MyBookings" class="pk-btn-outline">Back to My Bookings</a>
 </div>
+
+@section foot {
+    <script>
+        const btnCancel = document.getElementById('btnCancelBooking');
+        if (btnCancel) {
+            btnCancel.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Cancel Booking?',
+                    text: 'Are you sure you want to cancel booking #@Model.Id? This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Yes, cancel booking',
+                    customClass: {
+                        popup: 'pk-swal-modal',
+                        title: 'pk-swal-title'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('cancelBookingForm').submit();
+                    }
+                });
+            });
+        }
+    </script>
+}

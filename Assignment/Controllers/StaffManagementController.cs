@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Controllers
@@ -148,6 +148,7 @@ namespace Assignment.Controllers
 
             // Map handled bookings to calendar slot event items with structured metadata payload
             var bookingEvents = (staff.HandledBookings ?? new List<Booking>())
+                .Where(b => b.Status != BookingStatus.cancelled)
                 .Select(b => new SlotEventData
                 {
                     Id = b.Id.ToString(),
@@ -184,7 +185,7 @@ namespace Assignment.Controllers
                 Username = staff.Account?.AccountDetail?.Username ?? "N/A",
                 Email = staff.Account?.Email ?? "N/A",
                 RoleName = staff.Account?.AccountDetail?.Role?.RoleName ?? "N/A",
-                AvatarIcon = staff.Account?.AccountDetail?.AvatarIcon ?? "N/A",
+                AvatarIcon = GetIconUrl(staff.Account?.AccountDetail?.AvatarIcon),
                 Status = staff.Account?.AccountStatus?.Status ?? AccountStatusType.active,
                 BlockingReason = staff.Account?.AccountStatus?.BlockingReason,
                 BlockBy = staff.Account?.AccountStatus?.BlockBy,
@@ -287,6 +288,19 @@ namespace Assignment.Controllers
             }
 
             return RedirectToAction("StaffDetails", new { id = model.Id });
+        }
+
+        private string GetIconUrl(string? iconName)
+        {
+            //TODO: replace the url if something chenges in the future !!!
+            string url = $"~/images/avatars/{iconName}.png";
+            //if the iconName is not found return the default user.png icon
+            string physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "avatars", $"{iconName}.png");
+            if (!System.IO.File.Exists(physicalPath))
+            {
+                url = "~/images/user.png";
+            }
+            return Url.Content(url);
         }
     }
 }

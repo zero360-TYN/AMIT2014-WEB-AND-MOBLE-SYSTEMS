@@ -1,79 +1,116 @@
-@model List<Assignment.Models.MemberBookingHistoryItemViewModel>
+﻿@model List<Assignment.Models.MemberBookingHistoryItemViewModel>
 @using Assignment.Models
+@using Microsoft.AspNetCore.Html
+@using System.Text.Encodings.Web
 @{
     ViewBag.Title = "My Bookings";
     var currentStatus = ViewBag.CurrentStatus as BookingStatus?;
     var statusText = currentStatus?.ToString().ToUpper() ?? "ALL";
+
+    string RenderHtmlContent(IHtmlContent htmlContent)
+    {
+        using (var writer = new System.IO.StringWriter())
+        {
+            htmlContent.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
+        }
+    }
+
+    var tableModel = new TableListingViewModel
+    {
+        Headers = new List<string> { "ID", "Pokémon", "Service", "Room", "Staff", "Schedule", "Total Price", "Status", "Actions" },
+        Rows = new List<List<string>>()
+    };
+
+    if (Model != null)
+    {
+        foreach (var b in Model)
+        {
+            var actionsHtml = $@"<a href=""{Url.Action("Details", new { id = b.Id })}"" style=""color: var(--pk-blue-600); font-weight: 600;"">Details</a>";
+            if (b.Status == BookingStatus.pending)
+            {
+                actionsHtml += $@" <span style=""color:#cbd5e1; margin:0 4px;"">|</span> <a href=""{Url.Action("Index", "FakePayment", new { bookingId = b.Id })}"" style=""color: #10b981; font-weight: 600;"">Pay Now</a>";
+            }
+            if (b.Status == BookingStatus.pending || (b.Status == BookingStatus.confirmed && b.StartTime > DateTime.Now))
+            {
+                var antiForgeryHtml = RenderHtmlContent(Html.AntiForgeryToken());
+                actionsHtml += $@" <span style=""color:#cbd5e1; margin:0 4px;"">|</span> 
+                    <form action=""{Url.Action("Cancel", new { id = b.Id })}"" method=""post"" style=""display: inline; margin:0;"" class=""cancel-booking-form"" data-booking-id=""{b.Id}"">
+                        {antiForgeryHtml}
+                        <button type=""button"" class=""btn-cancel-booking"">Cancel</button>
+                    </form>";
+            }
+
+            string badgeColor = b.Status == BookingStatus.confirmed ? "var(--pk-blue-500)" :
+                                b.Status == BookingStatus.pending ? "#f59e0b" :
+                                b.Status == BookingStatus.completed ? "#10b981" : "#ef4444";
+
+            tableModel.Rows.Add(new List<string>
+            {
+                b.Id.ToString(),
+                $"<strong style=\"color: var(--pk-charcoal-dark);\">{System.Net.WebUtility.HtmlEncode(b.PokemonName)}</strong>",
+                $"{System.Net.WebUtility.HtmlEncode(b.ServiceName)} <br><span style=\"font-size:0.85em; opacity:0.7;\">{System.Net.WebUtility.HtmlEncode(b.ServiceCategoryName)}</span>",
+                $"Room {System.Net.WebUtility.HtmlEncode(b.RoomNumber)} <br><span style=\"font-size:0.85em; opacity:0.7;\">{System.Net.WebUtility.HtmlEncode(b.RoomTypeName)}</span>",
+                System.Net.WebUtility.HtmlEncode(b.StaffName),
+                $"{b.StartTime.ToString("yyyy-MM-dd HH:mm")}<br><span style=\"font-size:0.85em; opacity:0.7;\">to {b.EndTime.ToString("HH:mm")}</span>",
+                $"<strong style=\"color: #10b981;\">{b.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))}</strong>",
+                $"<span style=\"color: {badgeColor}; font-weight: 700;\">{b.Status.ToString().ToUpper()}</span>",
+                actionsHtml
+            });
+        }
+    }
 }
 
-<h2>My Bookings - @statusText</h2>
+<link rel="stylesheet" href="~/css/Booking/MyBookings.css" asp-append-version="true" />
 
-<div style="margin-bottom: 15px;">
-    <a asp-action="MyBookings">All</a> |
-    <a asp-action="MyBookings" asp-route-status="@BookingStatus.pending">Pending</a> |
-    <a asp-action="MyBookings" asp-route-status="@BookingStatus.confirmed">Confirmed</a> |
-    <a asp-action="MyBookings" asp-route-status="@BookingStatus.completed">Completed</a> |
-    <a asp-action="MyBookings" asp-route-status="@BookingStatus.cancelled">Cancelled</a>
+<div class="pk-page-header">
+    <div>
+        <h2 class="pk-dashboard-title">
+            My Bookings
+        </h2>
+    </div>
+    
+    <div class="pk-status-nav">
+        <a asp-action="MyBookings" class="@(currentStatus == null ? "active" : "")">ALL</a>
+        <a asp-action="MyBookings" asp-route-status="@BookingStatus.pending" class="@(currentStatus == BookingStatus.pending ? "active" : "")">PENDING</a>
+        <a asp-action="MyBookings" asp-route-status="@BookingStatus.confirmed" class="@(currentStatus == BookingStatus.confirmed ? "active" : "")">CONFIRMED</a>
+        <a asp-action="MyBookings" asp-route-status="@BookingStatus.completed" class="@(currentStatus == BookingStatus.completed ? "active" : "")">COMPLETED</a>
+        <a asp-action="MyBookings" asp-route-status="@BookingStatus.cancelled" class="@(currentStatus == BookingStatus.cancelled ? "active" : "")">CANCELLED</a>
+    </div>
 </div>
 
-<table class="simple-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Pokémon</th>
-            <th>Service</th>
-            <th>Room</th>
-            <th>Staff</th>
-            <th>Schedule</th>
-            <th>Total Price</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var b in Model)
-            {
-                <tr>
-                    <td>@b.Id</td>
-                    <td><strong>@b.PokemonName</strong></td>
-                    <td>@b.ServiceName (@b.ServiceCategoryName)</td>
-                    <td>Room @b.RoomNumber (@b.RoomTypeName)</td>
-                    <td>@b.StaffName</td>
-                    <td>@b.StartTime.ToString("yyyy-MM-dd HH:mm") - @b.EndTime.ToString("HH:mm")</td>
-                    <td>@b.TotalPrice.ToString("C", new System.Globalization.CultureInfo("en-MY"))</td>
-                    <td>@b.Status.ToString().ToUpper()</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@b.Id">Details</a>
-                        @if (b.Status == BookingStatus.pending)
-                        {
-                            <span> | </span>
-                            <a asp-controller="Payment" asp-action="Index" asp-route-bookingId="@b.Id">Pay Now</a>
-                        }
-                        @if (b.Status == BookingStatus.pending || (b.Status == BookingStatus.confirmed && b.StartTime > DateTime.Now))
-                        {
-                            <span> | </span>
-                            <form asp-action="Cancel" asp-route-id="@b.Id" method="post" style="display: inline;" onsubmit="return confirm('Cancel booking #@b.Id?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit">Cancel</button>
-                            </form>
-                        }
-                    </td>
-                </tr>
+<partial name="_TableList" model="tableModel" />
+
+<div class="pk-actions-bottom">
+    <a asp-action="Booking" class="pk-btn-primary">Create New Booking</a>
+    <a asp-controller="Booking" asp-action="Index" class="pk-btn-outline">Back to Home</a>
+</div>
+
+@section foot {
+    <script>
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('btn-cancel-booking')) {
+                const form = e.target.closest('form');
+                if (!form) return;
+                const bookingId = form.getAttribute('data-booking-id') || '';
+                Swal.fire({
+                    title: 'Cancel Booking?',
+                    text: `Are you sure you want to cancel booking #${bookingId}? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Yes, cancel booking',
+                    customClass: {
+                        popup: 'pk-swal-modal',
+                        title: 'pk-swal-title'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="9" style="text-align: center;">No bookings found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<br />
-<div>
-    <a asp-action="Index">Create New Booking</a> |
-    <a asp-controller="Home" asp-action="Index">Back to Home</a>
-</div>
+        });
+    </script>
+}

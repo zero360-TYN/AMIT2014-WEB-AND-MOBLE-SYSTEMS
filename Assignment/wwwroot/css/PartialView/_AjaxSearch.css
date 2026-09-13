@@ -1,0 +1,82 @@
+/* _AjaxSearch Component */
+.pk-search-card {
+    display: inline-flex;
+    align-items: center;
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 9999px;
+    padding: 6px 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pk-search-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--pk-blue-400), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pk-search-card:focus-within {
+    border-color: var(--pk-blue-400);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.pk-search-card:focus-within::before {
+    opacity: 1;
+    animation: pkLightStreak 2s infinite linear;
+}
+
+.pk-search-select {
+    border: none;
+    background: transparent;
+    font-family: var(--pk-font-sans);
+    color: var(--pk-charcoal-light);
+    font-weight: 500;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    padding-right: 8px;
+    border-right: 1px solid var(--pk-blue-100);
+}
+
+.pk-search-input {
+    border: none;
+    background: transparent;
+    font-family: var(--pk-font-sans);
+    font-size: 0.95rem;
+    color: var(--pk-charcoal-dark);
+    outline: none;
+    min-width: 250px;
+    padding: 4px 8px;
+}
+
+.pk-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.pk-search-btn {
+    background: linear-gradient(135deg, var(--pk-blue-500), var(--pk-blue-600));
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 6px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+}
+
+.pk-search-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--pk-glow-blue);
+    background: linear-gradient(135deg, var(--pk-blue-400), var(--pk-blue-500));
+}

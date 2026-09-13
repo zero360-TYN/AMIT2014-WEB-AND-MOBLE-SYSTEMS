@@ -1,0 +1,15 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    string GetActiveClass(string actionName) => string.Equals(currentAction, actionName, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+
+<link rel="stylesheet" href="~/css/PartialView/_AnalyticsNavigation.css" asp-append-version="true" />
+
+<nav class="pk-analytics-nav" aria-label="Analytics navigation">
+    <a asp-controller="Analytics" asp-action="Index" class="@GetActiveClass("Index")">Dashboard</a>
+    <a asp-controller="Analytics" asp-action="BookingAnalytics" class="@GetActiveClass("BookingAnalytics")">Booking Performance</a>
+    <a asp-controller="Analytics" asp-action="RoomAnalytics" class="@GetActiveClass("RoomAnalytics")">Room Usage</a>
+    <a asp-controller="Analytics" asp-action="StaffAnalytics" class="@GetActiveClass("StaffAnalytics")">Staff Performance</a>
+    <a asp-controller="Analytics" asp-action="UserAnalytics" class="@GetActiveClass("UserAnalytics")">User Analytics</a>
+    <a asp-controller="Analytics" asp-action="AccountStatusAnalytics" class="@GetActiveClass("AccountStatusAnalytics")">Account Status</a>
+</nav>

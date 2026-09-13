@@ -1,12 +1,13 @@
-header {
+@import url('global.css');
 
+/* Base App Overrides (Keep existing) */
+header {
 }
 
 footer {
-    background-color: yellow;
+    background-color: yellow; /* Kept original */
 }
 
 .echart-container {
-    height: 400px;
+    height: 400px; /* Kept original */
 }
-

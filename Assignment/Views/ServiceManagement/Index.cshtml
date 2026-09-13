@@ -1,9 +1,23 @@
 @{
-    ViewBag.Title = "Service Management";
+    ViewBag.Title = "Service Management Dashboard";
 }
 
-<p>Welcome to the Service Management page.</p>
-<a asp-action="List" asp-controller="ServiceManagement">View Service List</a>
-<a asp-action="Create" asp-controller="ServiceManagement">Create Service</a>
-<a asp-action="ServiceCategoryList" asp-controller="ServiceManagement">View Service Category List</a>
-<a asp-action="CreateServiceCategory" asp-controller="ServiceManagement">Create Service Category</a>
+<link rel="stylesheet" href="~/css/ServiceManagement/Index.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Service Control
+    </h2>
+</div>
+
+<div class="pk-welcome-card">
+    <h3 style="font-family: var(--pk-font-serif); color: var(--pk-charcoal-dark); margin-top: 0;">Pokémon Services &amp; Care</h3>
+    <p style="color: var(--pk-text-main); font-size: 1.1rem;">Manage treatment services, configure categories, and set pricing.</p>
+    
+    <div class="pk-action-grid">
+        <a asp-action="List" asp-controller="ServiceManagement" class="pk-btn-primary">View Service List</a>
+        <a asp-action="Create" asp-controller="ServiceManagement" class="pk-btn-outline">Create New Service</a>
+        <a asp-action="ServiceCategoryList" asp-controller="ServiceManagement" class="pk-btn-primary">View Categories</a>
+        <a asp-action="CreateServiceCategory" asp-controller="ServiceManagement" class="pk-btn-outline">Create Category</a>
+    </div>
+</div>

@@ -2,21 +2,43 @@
     ViewBag.Title = "Booking Dashboard";
 }
 
-<h2>Booking Management Dashboard</h2>
+<link rel="stylesheet" href="~/css/BookingManagement/Index.css" asp-append-version="true" />
 
-<p>Welcome to the Booking Management dashboard.</p>
-
-<div style="display: flex; gap: 15px; margin-bottom: 20px;">
-    <div><strong>Total:</strong> @ViewBag.TotalBookings</div>
-    <div><strong>Pending:</strong> @ViewBag.PendingBookings</div>
-    <div><strong>Confirmed:</strong> @ViewBag.ConfirmedBookings</div>
-    <div><strong>Completed:</strong> @ViewBag.CompletedBookings</div>
-    <div><strong>Cancelled:</strong> @ViewBag.CancelledBookings</div>
+<div class="pk-page-header">
+    <div>
+        <h2 class="pk-dashboard-title">
+            Booking Management
+        </h2>
+    </div>
 </div>
 
-<p>
-    <a asp-action="List" asp-controller="BookingManagement">View All Bookings</a> |
-    <a asp-action="List" asp-route-status="pending" asp-controller="BookingManagement">Pending Bookings</a> |
-    <a asp-action="List" asp-route-status="confirmed" asp-controller="BookingManagement">Confirmed Bookings</a> |
-    <a asp-action="Create" asp-controller="BookingManagement">Create New Booking</a>
-</p>
+<p class="pk-welcome-text">Overview of all center reservations and operational metrics.</p>
+
+<div class="pk-stats-grid">
+    <div class="pk-stat-card">
+        <div class="pk-stat-value">@ViewBag.TotalBookings</div>
+        <div class="pk-stat-label">Total</div>
+    </div>
+    <div class="pk-stat-card stat-pending">
+        <div class="pk-stat-value">@ViewBag.PendingBookings</div>
+        <div class="pk-stat-label">Pending</div>
+    </div>
+    <div class="pk-stat-card stat-confirmed">
+        <div class="pk-stat-value">@ViewBag.ConfirmedBookings</div>
+        <div class="pk-stat-label">Confirmed</div>
+    </div>
+    <div class="pk-stat-card stat-completed">
+        <div class="pk-stat-value">@ViewBag.CompletedBookings</div>
+        <div class="pk-stat-label">Completed</div>
+    </div>
+    <div class="pk-stat-card stat-cancelled">
+        <div class="pk-stat-value">@ViewBag.CancelledBookings</div>
+        <div class="pk-stat-label">Cancelled</div>
+    </div>
+</div>
+
+<div class="pk-action-links">
+    <a asp-action="List" asp-controller="BookingManagement" class="pk-btn-primary">View All Bookings</a>
+    <a asp-action="List" asp-route-status="pending" asp-controller="BookingManagement" class="pk-btn-outline">Pending Queue</a>
+    <a asp-action="List" asp-route-status="confirmed" asp-controller="BookingManagement" class="pk-btn-outline">Confirmed Schedule</a>
+</div>

@@ -1,0 +1,85 @@
+/* _VisualSlotTable Component */
+.visual-slot-table-component {
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    position: relative;
+}
+
+.visual-slot-table-component .card-header {
+    background-color: var(--pk-charcoal-dark);
+    border-bottom: 2px solid var(--pk-blue-400);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Neon glow streak on header bottom */
+.visual-slot-table-component .card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--pk-blue-400);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.visual-slot-table-component .text-primary {
+    color: var(--pk-bg-white) !important;
+    font-family: var(--pk-font-serif);
+    font-size: 1.25rem !important;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Cyber buttons for header */
+.visual-slot-table-component .btn-outline-secondary {
+    border: 1px solid var(--pk-blue-400);
+    color: var(--pk-blue-100);
+    background: transparent;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    padding: 4px 12px;
+}
+
+.visual-slot-table-component .btn-outline-secondary:hover {
+    background: var(--pk-blue-600);
+    color: var(--pk-bg-white);
+    box-shadow: var(--pk-glow-cyan);
+    border-color: var(--pk-blue-400);
+}
+
+.visual-slot-table-component .card-body {
+    padding: 16px;
+    background-image: var(--pk-watermark);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50%;
+}
+
+/* DayPilot Resets and Overrides */
+.visual-slot-table-component .daypilot-container {
+    border: 1px solid var(--pk-blue-200);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.visual-slot-table-component .calendar_default_event_inner,
+.visual-slot-table-component .scheduler_default_event_inner {
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    font-family: var(--pk-font-sans);
+    font-weight: 500;
+}

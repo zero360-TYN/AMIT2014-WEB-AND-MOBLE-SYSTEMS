@@ -1,33 +1,42 @@
-@model Assignment.Models.RoomEditViewModel
+﻿@model Assignment.Models.RoomEditViewModel
 
 @{
     ViewBag.Title = "Edit Room";
 }
 
-<h2>Edit Room</h2>
+<link rel="stylesheet" href="~/css/RoomManagement/Form.css" asp-append-version="true" />
 
-<hr />
-<form id="editRoomForm" asp-action="Edit" method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-    <input type="hidden" asp-for="Id" />
-    <div>
-        <label asp-for="RoomNumber"></label>
-        <input asp-for="RoomNumber" />
-        <span asp-validation-for="RoomNumber"></span>
-    </div>
-    <div>
-        <label asp-for="RoomTypeId"></label>
-        <select asp-for="RoomTypeId" asp-items="ViewBag.RoomTypes">
-            <option value="">-- Select Room Type --</option>
-        </select>
-        <span asp-validation-for="RoomTypeId"></span>
-    </div>
-    <br />
-    <div>
-        <button id="saveBtn" type="submit">Save Changes</button>
-        <a asp-action="List">Cancel</a>
-    </div>
-</form>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Configure Room
+    </h2>
+</div>
+
+<div class="pk-form-panel">
+    <form id="editRoomForm" asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" style="color: #ef4444; margin-bottom: 16px;"></div>
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="pk-form-group">
+            <label asp-for="RoomNumber"></label>
+            <input asp-for="RoomNumber" />
+            <span asp-validation-for="RoomNumber" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="RoomTypeId"></label>
+            <select asp-for="RoomTypeId" asp-items="ViewBag.RoomTypes">
+                <option value="">-- Select Room Type --</option>
+            </select>
+            <span asp-validation-for="RoomTypeId" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-actions-bar">
+            <button id="saveBtn" type="submit" class="pk-btn-submit">Save Changes</button>
+            <a asp-action="List" class="pk-btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
 
 @section foot {
     <script>
@@ -44,21 +53,23 @@
             const newFormData = new URLSearchParams(new FormData(form)).toString();
             if (newFormData === currentFormData) {
                 Swal.fire({
-                    title: 'No changes to save',
+                    title: 'No changes',
                     text: "There are no changes to save.",
-                    icon: 'info'
+                    icon: 'info',
+                    customClass: { popup: 'pk-swal-modal' }
                 });
                 return;
             }
 
             Swal.fire({
-                title: 'Are you sure?',
+                title: 'Save Changes?',
                 text: "You are about to save changes to this room.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
+                confirmButtonColor: 'var(--pk-blue-500)',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, save it!',
+                customClass: { popup: 'pk-swal-modal' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

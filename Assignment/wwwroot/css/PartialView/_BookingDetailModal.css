@@ -1,0 +1,84 @@
+/* _BookingDetailModal Component styling via SweetAlert2 classes */
+.pk-swal-modal {
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(56, 189, 248, 0.2) !important;
+    border-top: 4px solid var(--pk-blue-500) !important;
+    background-color: var(--pk-bg-white) !important;
+    background-image: var(--pk-watermark) !important;
+    background-position: bottom right !important;
+    background-repeat: no-repeat !important;
+    background-size: 40% !important;
+}
+
+.pk-swal-title {
+    font-family: var(--pk-font-serif) !important;
+    color: var(--pk-charcoal-dark) !important;
+    letter-spacing: 0.03em !important;
+    font-size: 1.5rem !important;
+}
+
+.pk-swal-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    overflow: hidden;
+    border: var(--pk-border-soft);
+}
+
+.pk-swal-table th {
+    background-color: var(--pk-blue-100);
+    color: var(--pk-charcoal-dark);
+    font-weight: 600;
+    padding: 10px 12px;
+    font-family: var(--pk-font-sans);
+    font-size: 0.9rem;
+    width: 35%;
+    border-bottom: 1px solid var(--pk-bg-white);
+}
+
+.pk-swal-table td {
+    padding: 10px 12px;
+    color: var(--pk-text-main);
+    font-family: var(--pk-font-sans);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--pk-blue-100);
+}
+
+.pk-badge {
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pk-badge-confirmed { background: var(--pk-blue-500); color: white; box-shadow: var(--pk-glow-blue); }
+.pk-badge-pending { background: #f59e0b; color: white; box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+.pk-badge-completed { background: #10b981; color: white; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+.pk-badge-cancelled { background: #ef4444; color: white; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+
+/* SweetAlert buttons styling */
+.swal2-confirm.pk-btn-confirm {
+    background: linear-gradient(135deg, var(--pk-blue-500), var(--pk-blue-600)) !important;
+    border-radius: 9999px !important;
+    font-family: var(--pk-font-sans) !important;
+    font-weight: 600 !important;
+    padding: 10px 24px !important;
+    box-shadow: var(--pk-glow-blue) !important;
+}
+
+.swal2-cancel.pk-btn-cancel {
+    background: var(--pk-bg-soft) !important;
+    color: var(--pk-charcoal-light) !important;
+    border: 1px solid var(--pk-blue-200) !important;
+    border-radius: 9999px !important;
+    font-family: var(--pk-font-sans) !important;
+    font-weight: 600 !important;
+}

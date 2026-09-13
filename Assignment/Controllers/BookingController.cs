@@ -1,5 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment.Models;
 
@@ -18,10 +17,16 @@ namespace Assignment.Controllers
         // 1. STEP-BY-STEP BOOKING WIZARD
         // ==========================================
 
-        // GET: /Booking or /Booking/Index
-        public IActionResult Index(int? serviceId)
+        // GET: /Booking/Index
+        public IActionResult Index()
         {
-            PopulateWizardData(serviceId);
+            return View();
+        }
+
+        // GET: /Booking/Booking
+        public IActionResult Booking(int? serviceId)
+        {
+            PopulateWizardData();
             var model = new MemberBookingViewModel
             {
                 ServiceId = serviceId ?? 0,
@@ -38,20 +43,19 @@ namespace Assignment.Controllers
             // 1. Basic Model Validation
             if (!ModelState.IsValid)
             {
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             // 2. Validate Service
             var service = db.Services
-                .Include(s => s.ServiceCategory)
                 .FirstOrDefault(s => s.Id == model.ServiceId && !s.IsDeleted);
 
             if (service == null)
             {
                 ModelState.AddModelError("ServiceId", "The selected service does not exist or is no longer available.");
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             // 3. Validate Room & Category Alignment
@@ -62,23 +66,38 @@ namespace Assignment.Controllers
             if (room == null)
             {
                 ModelState.AddModelError("RoomId", "The selected room does not exist or is currently unavailable.");
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             if (room.RoomType?.ServiceCategoryId != service.ServiceCategoryId)
             {
                 ModelState.AddModelError("RoomId", "The selected room is not compatible with the selected service category.");
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             // 4. Validate Start Time (Must be in the future & within business hours 08:00 - 18:00)
             if (model.StartTime < DateTime.Now.AddMinutes(-5))
             {
-                ModelState.AddModelError("StartTime", "Booking start time cannot be in the past.");
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                var errorMsg = "Booking start time cannot be in the past. Please select a future date and time.";
+                ModelState.AddModelError("StartTime", errorMsg);
+                ModelState.AddModelError("", errorMsg);
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = errorMsg;
+                PopulateWizardData();
+                return View("Booking", model);
+            }
+
+            if (model.StartTime.Hour < 8 || model.StartTime.Hour >= 18)
+            {
+                var errorMsg = "Booking start time must be within business hours (08:00 - 18:00).";
+                ModelState.AddModelError("StartTime", errorMsg);
+                ModelState.AddModelError("", errorMsg);
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = errorMsg;
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             // Calculate EndTime based on service duration
@@ -91,9 +110,13 @@ namespace Assignment.Controllers
 
             if (roomConflict)
             {
-                ModelState.AddModelError("StartTime", "This room is already booked during the selected time slot. Please choose another time or room.");
-                PopulateWizardData(model.ServiceId);
-                return View("Index", model);
+                var errorMsg = "This room is already booked during the selected time slot. Please choose another time or room.";
+                ModelState.AddModelError("StartTime", errorMsg);
+                ModelState.AddModelError("", errorMsg);
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = errorMsg;
+                PopulateWizardData();
+                return View("Booking", model);
             }
 
             // 6. Staff Assignment & Conflict Check
@@ -101,15 +124,13 @@ namespace Assignment.Controllers
             if (model.StaffId.HasValue && model.StaffId.Value > 0)
             {
                 var chosenStaff = db.Staffs
-                    .Include(s => s.Account)
-                        .ThenInclude(a => a.AccountStatus)
                     .FirstOrDefault(s => s.Id == model.StaffId.Value && s.Account.AccountStatus.Status == AccountStatusType.active);
 
                 if (chosenStaff == null)
                 {
                     ModelState.AddModelError("StaffId", "Selected staff member is not currently active.");
-                    PopulateWizardData(model.ServiceId);
-                    return View("Index", model);
+                    PopulateWizardData();
+                    return View("Booking", model);
                 }
 
                 var staffConflict = db.Bookings.Any(b => b.StaffId == model.StaffId.Value &&
@@ -119,8 +140,8 @@ namespace Assignment.Controllers
                 if (staffConflict)
                 {
                     ModelState.AddModelError("StaffId", "Selected staff member is already assigned to another booking during this time slot.");
-                    PopulateWizardData(model.ServiceId);
-                    return View("Index", model);
+                    PopulateWizardData();
+                    return View("Booking", model);
                 }
 
                 assignedStaffId = model.StaffId.Value;
@@ -136,8 +157,6 @@ namespace Assignment.Controllers
                     .ToList();
 
                 var availableStaff = db.Staffs
-                    .Include(s => s.Account)
-                        .ThenInclude(a => a.AccountStatus)
                     .Where(s => s.Account.AccountStatus.Status == AccountStatusType.active &&
                                 !busyStaffIds.Contains(s.Id))
                     .FirstOrDefault();
@@ -145,8 +164,8 @@ namespace Assignment.Controllers
                 if (availableStaff == null)
                 {
                     ModelState.AddModelError("StartTime", "No staff members are available during this time slot. Please pick another time.");
-                    PopulateWizardData(model.ServiceId);
-                    return View("Index", model);
+                    PopulateWizardData();
+                    return View("Booking", model);
                 }
 
                 assignedStaffId = availableStaff.Id;
@@ -197,16 +216,7 @@ namespace Assignment.Controllers
             var accountId = GetCurrentAccountId();
 
             var query = db.Bookings
-                .Include(b => b.BookingDetail)
-                .Include(b => b.Service)
-                    .ThenInclude(s => s.ServiceCategory)
-                .Include(b => b.Room)
-                    .ThenInclude(r => r.RoomType)
-                .Include(b => b.Staff)
-                    .ThenInclude(s => s.Account)
-                        .ThenInclude(a => a.AccountDetail)
-                .Where(b => b.AccountId == accountId)
-                .AsQueryable();
+                .Where(b => b.AccountId == accountId);
 
             if (status.HasValue)
             {
@@ -331,7 +341,6 @@ namespace Assignment.Controllers
             }
 
             var rooms = db.Rooms
-                .Include(r => r.RoomType)
                 .Where(r => !r.IsDeleted && r.RoomType.ServiceCategoryId == service.ServiceCategoryId)
                 .Select(r => new
                 {
@@ -352,9 +361,14 @@ namespace Assignment.Controllers
         [HttpGet]
         public IActionResult GetAvailableTimeSlots(int serviceId, int roomId, int? staffId, string date)
         {
-            if (!DateTime.TryParse(date, out var targetDate))
+            if (string.IsNullOrWhiteSpace(date) || !DateTime.TryParse(date, out var targetDate))
             {
-                targetDate = DateTime.Today.AddDays(1);
+                return BadRequest(new { message = "Invalid date format. Please select a valid date." });
+            }
+
+            if (targetDate.Date < DateTime.Today)
+            {
+                return BadRequest(new { message = "Booking date cannot be in the past. Please select today or a future date." });
             }
 
             var service = db.Services.FirstOrDefault(s => s.Id == serviceId && !s.IsDeleted);
@@ -365,14 +379,13 @@ namespace Assignment.Controllers
             var businessStart = targetDate.Date.AddHours(9);
             var businessEnd = targetDate.Date.AddHours(18);
 
-            // Fetch existing bookings for this room or staff on the target date
+            // Fetch existing bookings on the target date
             var dayStart = targetDate.Date;
             var dayEnd = dayStart.AddDays(1);
 
             var existingBookings = db.Bookings
                 .Where(b => b.Status != BookingStatus.cancelled &&
-                            b.StartTime < dayEnd && b.EndTime > dayStart &&
-                            (b.RoomId == roomId || (staffId.HasValue && b.StaffId == staffId.Value)))
+                            b.StartTime < dayEnd && b.EndTime > dayStart)
                 .Select(b => new
                 {
                     b.RoomId,
@@ -381,6 +394,9 @@ namespace Assignment.Controllers
                     b.EndTime
                 })
                 .ToList();
+
+            var totalActiveStaff = db.Staffs
+                .Count(s => s.Account.AccountStatus.Status == AccountStatusType.active);
 
             var slots = new List<TimeSlotOptionViewModel>();
             var cursor = businessStart;
@@ -394,15 +410,34 @@ namespace Assignment.Controllers
 
                 var isPast = slotStart <= now;
                 var roomOccupied = existingBookings.Any(b => b.RoomId == roomId && slotStart < b.EndTime && slotEnd > b.StartTime);
-                var staffBusy = staffId.HasValue && staffId.Value > 0 &&
-                                existingBookings.Any(b => b.StaffId == staffId.Value && slotStart < b.EndTime && slotEnd > b.StartTime);
 
-                var isAvailable = !isPast && !roomOccupied && !staffBusy;
+                bool staffOccupied;
+                if (staffId.HasValue && staffId.Value > 0)
+                {
+                    staffOccupied = existingBookings.Any(b => b.StaffId == staffId.Value && slotStart < b.EndTime && slotEnd > b.StartTime);
+                }
+                else
+                {
+                    var busyStaffCount = existingBookings
+                        .Where(b => slotStart < b.EndTime && slotEnd > b.StartTime)
+                        .Select(b => b.StaffId)
+                        .Distinct()
+                        .Count();
+                    staffOccupied = totalActiveStaff > 0 && busyStaffCount >= totalActiveStaff;
+                }
+
+                var isOccupied = roomOccupied || staffOccupied;
+                var isAvailable = !isPast && !isOccupied;
+
                 string? reason = null;
-
-                if (isPast) reason = "Past time";
-                else if (roomOccupied) reason = "Room occupied";
-                else if (staffBusy) reason = "Staff unavailable";
+                if (isPast)
+                {
+                    reason = "Past time";
+                }
+                else if (isOccupied)
+                {
+                    reason = "Room or staff occupied";
+                }
 
                 slots.Add(new TimeSlotOptionViewModel
                 {
@@ -468,18 +503,16 @@ namespace Assignment.Controllers
         /// </summary>
         private IActionResult ContinueToPayment(int bookingId)
         {
-            return RedirectToAction("Index", "Payment", new { bookingId });
+            return RedirectToAction("Index", "FakePayment", new { bookingId });
         }
 
         // ==========================================
         // 5. HELPER METHODS
         // ==========================================
 
-        private void PopulateWizardData(int? selectedServiceId = null)
+        private void PopulateWizardData()
         {
-            var categories = db.ServiceCategories
-                .Include(c => c.Services.Where(s => !s.IsDeleted))
-                .ToList();
+            var categories = db.ServiceCategories.ToList();
 
             var allActiveServices = db.Services
                 .Include(s => s.ServiceCategory)
@@ -489,10 +522,6 @@ namespace Assignment.Controllers
                 .ToList();
 
             var staffs = db.Staffs
-                .Include(s => s.Account)
-                    .ThenInclude(a => a.AccountDetail)
-                .Include(s => s.Account)
-                    .ThenInclude(a => a.AccountStatus)
                 .Where(s => s.Account.AccountStatus.Status == AccountStatusType.active)
                 .Select(s => new
                 {

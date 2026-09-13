@@ -4,10 +4,15 @@
     ViewBag.Title = "Service Details";
 }
 
-<h2>Service Details</h2>
+<link rel="stylesheet" href="~/css/ServiceManagement/Details.css" asp-append-version="true" />
 
-<div>
-    <hr />
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Service Details
+    </h2>
+</div>
+
+<div class="pk-details-card">
     <table class="simple-table">
         <tbody>
             <tr>
@@ -16,15 +21,15 @@
             </tr>
             <tr>
                 <th>Service Name</th>
-                <td>@Model.Name</td>
+                <td><strong>@Model.Name</strong></td>
             </tr>
             <tr>
                 <th>Description</th>
-                <td>@Model.Description</td>
+                <td>@(string.IsNullOrWhiteSpace(Model.Description) ? "N/A" : Model.Description)</td>
             </tr>
             <tr>
                 <th>Price</th>
-                <td>@Model.Price.ToString("C", new System.Globalization.CultureInfo("en-MY"))</td>
+                <td><strong style="color: #10b981;">@Model.Price.ToString("C", new System.Globalization.CultureInfo("en-MY"))</strong></td>
             </tr>
             <tr>
                 <th>Duration</th>
@@ -32,7 +37,7 @@
             </tr>
             <tr>
                 <th>Service Category</th>
-                <td>@Model.ServiceCategoryName</td>
+                <td><span style="color: var(--pk-blue-600); font-weight: 600;">@Model.ServiceCategoryName</span></td>
             </tr>
             <tr>
                 <th>Created At</th>
@@ -40,10 +45,12 @@
             </tr>
         </tbody>
     </table>
-    <br />
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <button type="button" id="deleteBtn">Delete</button> |
-    <a asp-action="List">Back to list</a>
+    
+    <div class="pk-actions-bar">
+        <a asp-action="List" class="pk-btn-outline">Back to list</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="pk-btn-primary">Edit Service</a>
+        <button type="button" id="deleteBtn" class="pk-btn-danger">Delete Service</button>
+    </div>
 </div>
 
 <form id="deleteForm" asp-action="Delete" method="post" style="display:none;">
@@ -59,13 +66,14 @@
             deleteBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 Swal.fire({
-                    title: 'Are you sure?',
+                    title: 'Confirm Deletion',
                     text: `You are about to delete Service "${@Html.Raw(Json.Serialize(Model.Name))}". This action cannot be undone.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
+                    cancelButtonColor: 'var(--pk-blue-500)',
+                    confirmButtonText: 'Yes, delete it!',
+                    customClass: { popup: 'pk-swal-modal' }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         deleteForm.submit();

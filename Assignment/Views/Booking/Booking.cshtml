@@ -1,0 +1,728 @@
+@model Assignment.Models.MemberBookingViewModel
+@using Assignment.Models
+@{
+    ViewBag.Title = "Step-by-Step Booking";
+    var categories = ViewBag.ServiceCategories as List<ServiceCategory> ?? new List<ServiceCategory>();
+    var services = ViewBag.AllServices as List<Service> ?? new List<Service>();
+    var staffs = ViewBag.StaffList as IEnumerable<dynamic> ?? new List<dynamic>();
+}
+
+<link rel="stylesheet" href="~/css/Booking/Booking.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <div>
+        <h2 class="pk-dashboard-title">
+            Booking Terminal
+        </h2>
+    </div>
+    <div class="pk-header-links">
+        <a asp-action="MyBookings">My Bookings</a>
+        <a asp-controller="Home" asp-action="Index">Back to Home</a>
+    </div>
+</div>
+
+<!-- Step Indicator -->
+<div id="stepIndicator" class="pk-step-indicator">
+    <span id="stepLabel1" class="active-step">Step 1: Service</span>
+    <span class="step-arrow">&gt;</span>
+    <span id="stepLabel2">Step 2: Room</span>
+    <span class="step-arrow">&gt;</span>
+    <span id="stepLabel3">Step 3: Schedule &amp; Staff</span>
+    <span class="step-arrow">&gt;</span>
+    <span id="stepLabel4">Step 4: Pokémon Info</span>
+    <span class="step-arrow">&gt;</span>
+    <span id="stepLabel5">Step 5: Review &amp; Confirm</span>
+</div>
+
+<form id="memberBookingForm" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    
+    @if (!ViewData.ModelState.IsValid || TempData["AlertMessage"] != null || TempData["AlertError"] != null)
+    {
+        <div style="background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+            @if (TempData["AlertMessage"] != null && TempData["AlertType"]?.ToString() == "error")
+            {
+                <div style="font-weight: bold; margin-bottom: 5px;">@TempData["AlertMessage"]</div>
+            }
+            else if (TempData["AlertError"] != null)
+            {
+                <div style="font-weight: bold; margin-bottom: 5px;">@TempData["AlertError"]</div>
+            }
+            <div asp-validation-summary="All"></div>
+        </div>
+    }
+
+    <input type="hidden" asp-for="ServiceId" id="selectedServiceId" />
+    <input type="hidden" asp-for="RoomId" id="selectedRoomId" />
+    <input type="hidden" asp-for="StartTime" id="selectedStartTime" value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm")" />
+
+    <!-- STEP 1: SERVICE -->
+    <div id="panel1" class="wizard-panel">
+        <h3>Step 1: Choose a Service</h3>
+
+        <div>
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter">
+                <option value="all">-- All Categories --</option>
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
+        <br />
+
+        <div class="pk-service-grid" id="servicesGrid">
+            @foreach (var s in services)
+            {
+                <label class="pk-service-card service-row" data-category="@s.ServiceCategoryId">
+                    <input type="radio" name="serviceRadio" value="@s.Id"
+                           data-name="@s.Name"
+                           data-price="@s.Price"
+                           data-duration="@s.DurationMinutes"
+                           data-categoryname="@s.ServiceCategory?.Name"
+                           @(Model.ServiceId == s.Id ? "checked" : "") />
+                    <div class="pk-service-card-content">
+                        <div class="pk-service-header">
+                            <h4>@s.Name</h4>
+                            <span class="pk-service-price">RM @s.Price.ToString("F2")</span>
+                        </div>
+                        <div class="pk-service-desc">@s.Description</div>
+                        <div class="pk-service-footer">
+                            <span class="pk-badge-soft">@s.ServiceCategory?.Name</span>
+                            <span class="pk-badge-time">@s.DurationMinutes mins</span>
+                        </div>
+                    </div>
+                </label>
+            }
+        </div>
+        <br />
+
+        <div class="pk-wizard-actions">
+            <button type="button" id="btnNext1" class="pk-btn-next">Next: Select Room &gt;</button>
+        </div>
+    </div>
+
+    <!-- STEP 2: ROOM -->
+    <div id="panel2" class="wizard-panel" style="display: none;">
+        <h3>Step 2: Choose Room</h3>
+        <p>Rooms available under the selected service category:</p>
+
+        <div id="roomLoadingMsg" style="display: none; padding: 20px; text-align: center; color: var(--pk-blue-500);">Loading available rooms...</div>
+        <div class="pk-service-grid" id="roomsGrid">
+            <!-- Dynamically populated via AJAX -->
+        </div>
+        <br />
+
+        <div class="pk-wizard-actions">
+            <button type="button" id="btnPrev2" class="pk-btn-prev">&lt; Back to Service</button>
+            <button type="button" id="btnNext2" class="pk-btn-next">Next: Schedule &amp; Staff &gt;</button>
+        </div>
+    </div>
+
+    <!-- STEP 3: SCHEDULE & STAFF -->
+    <div id="panel3" class="wizard-panel" style="display: none;">
+        <h3>Step 3: Pick Schedule &amp; Staff</h3>
+
+        <div>
+            <label for="bookingDatePicker">Booking Date:</label>
+            <input type="date" id="bookingDatePicker"
+                   value="@(Model.StartTime.Date >= DateTime.Today ? Model.StartTime.ToString("yyyy-MM-dd") : DateTime.Today.AddDays(1).ToString("yyyy-MM-dd"))"
+                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <span id="bookingDatePickerError" style="color: red; display: none; margin-left: 8px;"></span>
+        </div>
+        <br />
+
+        <div>
+            <label asp-for="StaffId">Assigned Staff:</label>
+            <select asp-for="StaffId" id="staffSelector">
+                <option value="">-- Any Available Staff (Auto-Assign) --</option>
+                @foreach (var staff in staffs)
+                {
+                    <option value="@staff.Id">@staff.DisplayName</option>
+                }
+            </select>
+        </div>
+        <br />
+
+        <div>
+            <label>Available Time Slots (09:00 - 18:00):</label>
+            <div id="slotStatusMsg">Checking slot availability...</div>
+            <div id="slotListContainer" style="margin-top: 8px;"></div>
+            <div id="selectedSlotNotice" style="margin-top: 8px; display: none;">
+                <strong>Selected Time:</strong> <span id="selectedSlotText"></span>
+            </div>
+        </div>
+        <br />
+
+        <div class="pk-wizard-actions">
+            <button type="button" id="btnPrev3" class="pk-btn-prev">&lt; Back to Rooms</button>
+            <button type="button" id="btnNext3" class="pk-btn-next">Next: Pokémon Info &gt;</button>
+        </div>
+    </div>
+
+    <!-- STEP 4: Pokémon DETAILS -->
+    <div id="panel4" class="wizard-panel" style="display: none;">
+        <h3>Step 4: Pokémon Information</h3>
+
+        <div>
+            <label asp-for="PokemonName">Pokémon Name:</label>
+            <input asp-for="PokemonName" id="PokemonNameInput" placeholder="e.g. Pikachu" />
+            <span asp-validation-for="PokemonName"></span>
+        </div>
+        <br />
+
+        <div>
+            <label asp-for="Notes">Special Notes / Allergies:</label>
+            <textarea asp-for="Notes" id="notesInput" rows="3" placeholder="Special requirements..."></textarea>
+            <span asp-validation-for="Notes"></span>
+        </div>
+        <br />
+
+        <div class="pk-wizard-actions">
+            <button type="button" id="btnPrev4" class="pk-btn-prev">&lt; Back to Schedule</button>
+            <button type="button" id="btnNext4" class="pk-btn-next">Next: Review &amp; Confirm &gt;</button>
+        </div>
+    </div>
+
+    <!-- STEP 5: REVIEW & SUMMARY -->
+    <div id="panel5" class="wizard-panel" style="display: none;">
+        <h3>Step 5: Review &amp; Confirmation</h3>
+
+        <table class="simple-table" style="max-width: 600px;">
+            <tbody>
+                <tr>
+                    <th style="width: 35%;">Pokémon Name</th>
+                    <td id="sumPokemonName">-</td>
+                </tr>
+                <tr>
+                    <th>Service</th>
+                    <td id="sumServiceName">-</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td id="sumDuration">-</td>
+                </tr>
+                <tr>
+                    <th>Room</th>
+                    <td id="sumRoomName">-</td>
+                </tr>
+                <tr>
+                    <th>Staff</th>
+                    <td id="sumStaffName">-</td>
+                </tr>
+                <tr>
+                    <th>Schedule</th>
+                    <td id="sumSchedule">-</td>
+                </tr>
+                <tr>
+                    <th>Special Notes</th>
+                    <td id="sumNotes">-</td>
+                </tr>
+                <tr>
+                    <th>Service Fee</th>
+                    <td id="sumServicePrice">RM 0.00</td>
+                </tr>
+                <tr>
+                    <th>Room Facility Fee</th>
+                    <td id="sumRoomPrice">RM 0.00</td>
+                </tr>
+                <tr>
+                    <th>Total Price</th>
+                    <td><strong id="sumTotalPrice">RM 0.00</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+
+        <p>Please review your booking details above before continuing to payment.</p>
+
+        <div class="pk-wizard-actions">
+            <button type="button" id="btnPrev5" class="pk-btn-prev">&lt; Back</button>
+            <button type="submit" id="btnSubmitBooking" class="pk-btn-submit">Confirm Booking &amp; Continue to Payment</button>
+        </div>
+    </div>
+</form>
+
+@section foot {
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        let selectedService = null;
+        let selectedRoom = null;
+        let selectedSlot = null;
+
+        const form = document.getElementById('memberBookingForm');
+        const selectedServiceIdInput = document.getElementById('selectedServiceId');
+        const selectedRoomIdInput = document.getElementById('selectedRoomId');
+        const selectedStartTimeInput = document.getElementById('selectedStartTime');
+        const bookingDatePicker = document.getElementById('bookingDatePicker');
+        const staffSelector = document.getElementById('staffSelector');
+        const PokemonNameInput = document.getElementById('PokemonNameInput');
+        const notesInput = document.getElementById('notesInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+
+        function updateStepIndicator(step) {
+            for (let i = 1; i <= totalSteps; i++) {
+                const label = document.getElementById(`stepLabel${i}`);
+                if (!label) continue;
+                
+                label.innerHTML = `Step ${i}: ${getStepTitle(i)}`;
+                
+                if (i === step) {
+                    label.classList.add('active-step');
+                } else {
+                    label.classList.remove('active-step');
+                }
+            }
+        }
+
+        function getStepTitle(step) {
+            switch(step) {
+                case 1: return 'Service';
+                case 2: return 'Room';
+                case 3: return 'Schedule & Staff';
+                case 4: return 'Pokémon Info';
+                case 5: return 'Review & Confirm';
+                default: return '';
+            }
+        }
+
+        function goToStep(step) {
+            if (step < 1 || step > totalSteps) return;
+
+            if (step > currentStep) {
+                if (currentStep === 1 && !validateStep1()) return;
+                if (currentStep === 2 && !validateStep2()) return;
+                if (currentStep === 3 && !validateStep3()) return;
+                if (currentStep === 4 && !validateStep4()) return;
+            }
+
+            for (let i = 1; i <= totalSteps; i++) {
+                const panel = document.getElementById(`panel${i}`);
+                if (panel) {
+                    panel.style.display = (i === step) ? 'block' : 'none';
+                }
+            }
+
+            currentStep = step;
+            updateStepIndicator(step);
+
+            if (step === 2) {
+                loadRoomsForService(selectedService.id);
+            } else if (step === 3) {
+                loadTimeSlots();
+            } else if (step === 5) {
+                renderSummary();
+            }
+        }
+
+        // Category filter
+        categoryFilter.addEventListener('change', function() {
+            const selectedCat = this.value;
+            document.querySelectorAll('.service-row').forEach(row => {
+                if (selectedCat === 'all' || row.getAttribute('data-category') === selectedCat) {
+                    row.style.removeProperty('display');
+                } else {
+                    row.style.setProperty('display', 'none', 'important');
+                }
+            });
+        });
+
+        // Service Radio selection
+        document.querySelectorAll('input[name="serviceRadio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    selectedService = {
+                        id: parseInt(this.value),
+                        name: this.getAttribute('data-name'),
+                        price: parseFloat(this.getAttribute('data-price')),
+                        duration: parseInt(this.getAttribute('data-duration')),
+                        categoryName: this.getAttribute('data-categoryname')
+                    };
+                    selectedServiceIdInput.value = selectedService.id;
+                    selectedRoom = null;
+                    selectedRoomIdInput.value = '';
+                    selectedSlot = null;
+                }
+            });
+        });
+
+        function validateStep1() {
+            const checked = document.querySelector('input[name="serviceRadio"]:checked');
+            if (!checked) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Service Required',
+                    text: 'Please select a service to proceed.'
+                });
+                return false;
+            }
+            if (!selectedService) {
+                selectedService = {
+                    id: parseInt(checked.value),
+                    name: checked.getAttribute('data-name'),
+                    price: parseFloat(checked.getAttribute('data-price')),
+                    duration: parseInt(checked.getAttribute('data-duration')),
+                    categoryName: checked.getAttribute('data-categoryname')
+                };
+                selectedServiceIdInput.value = selectedService.id;
+            }
+            return true;
+        }
+
+        document.getElementById('btnNext1').addEventListener('click', () => goToStep(2));
+
+        // Step 2: Load rooms
+        function loadRoomsForService(serviceId) {
+            const grid = document.getElementById('roomsGrid');
+            const loading = document.getElementById('roomLoadingMsg');
+
+            loading.style.display = 'block';
+            grid.innerHTML = '';
+
+            fetch(`/Booking/GetRoomsByService?serviceId=${serviceId}`)
+                .then(res => res.json())
+                .then(rooms => {
+                    loading.style.display = 'none';
+                    if (!rooms || rooms.length === 0) {
+                        grid.innerHTML = '<div style="grid-column: 1/-1; padding:20px; color:var(--pk-charcoal-light);">No available rooms under this service category.</div>';
+                        return;
+                    }
+
+                    rooms.forEach(room => {
+                        const lbl = document.createElement('label');
+                        lbl.className = 'pk-service-card';
+                        const isChecked = selectedRoom && selectedRoom.id === room.id;
+                        lbl.innerHTML = `
+                            <input type="radio" name="roomRadio" value="${room.id}"
+                                   data-number="${room.roomNumber}"
+                                   data-type="${room.roomTypeName}"
+                                   data-price="${room.basePrice}"
+                                   ${isChecked ? 'checked' : ''} />
+                            <div class="pk-service-card-content">
+                                <div class="pk-service-header">
+                                    <h4>Room ${room.roomNumber}</h4>
+                                    <span class="pk-service-price">+RM ${parseFloat(room.basePrice).toFixed(2)}</span>
+                                </div>
+                                <div class="pk-service-desc">${room.description || 'Standard facility for optimal care.'}</div>
+                                <div class="pk-service-footer">
+                                    <span class="pk-badge-soft">${room.roomTypeName}</span>
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(lbl);
+                    });
+
+                    document.querySelectorAll('input[name="roomRadio"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            if (this.checked) {
+                                selectedRoom = {
+                                    id: parseInt(this.value),
+                                    number: this.getAttribute('data-number'),
+                                    typeName: this.getAttribute('data-type'),
+                                    basePrice: parseFloat(this.getAttribute('data-price'))
+                                };
+                                selectedRoomIdInput.value = selectedRoom.id;
+                                selectedSlot = null;
+                            }
+                        });
+                    });
+                })
+                .catch(() => {
+                    loading.style.display = 'none';
+                    tbody.innerHTML = '<tr><td colspan="5" style="color:red;">Error loading rooms.</td></tr>';
+                });
+        }
+
+        function validateStep2() {
+            const checked = document.querySelector('input[name="roomRadio"]:checked');
+            if (!checked) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Room Required',
+                    text: 'Please select a room to proceed.'
+                });
+                return false;
+            }
+            if (!selectedRoom) {
+                selectedRoom = {
+                    id: parseInt(checked.value),
+                    number: checked.getAttribute('data-number'),
+                    typeName: checked.getAttribute('data-type'),
+                    basePrice: parseFloat(checked.getAttribute('data-price'))
+                };
+                selectedRoomIdInput.value = selectedRoom.id;
+            }
+            return true;
+        }
+
+        document.getElementById('btnPrev2').addEventListener('click', () => goToStep(1));
+        document.getElementById('btnNext2').addEventListener('click', () => goToStep(3));
+
+        // Step 3: Slots
+        function loadTimeSlots() {
+            if (!selectedService || !selectedRoom) return;
+
+            const date = bookingDatePicker.value;
+            const staffId = staffSelector.value;
+            const container = document.getElementById('slotListContainer');
+            const statusMsg = document.getElementById('slotStatusMsg');
+            const notice = document.getElementById('selectedSlotNotice');
+            const dateError = document.getElementById('bookingDatePickerError');
+
+            if (dateError) dateError.style.display = 'none';
+
+            if (!date) {
+                statusMsg.textContent = 'Please choose a booking date.';
+                statusMsg.style.color = 'red';
+                container.innerHTML = '';
+                notice.style.display = 'none';
+                return;
+            }
+
+            const today = new Date();
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            if (date < todayStr) {
+                statusMsg.textContent = 'Booking date cannot be in the past. Please choose today or a future date.';
+                statusMsg.style.color = 'red';
+                if (dateError) {
+                    dateError.textContent = 'Date cannot be in the past.';
+                    dateError.style.display = 'inline';
+                }
+                container.innerHTML = '';
+                notice.style.display = 'none';
+                return;
+            }
+
+            statusMsg.style.color = '';
+            statusMsg.textContent = 'Checking slot availability...';
+            container.innerHTML = '';
+            notice.style.display = 'none';
+
+            fetch(`/Booking/GetAvailableTimeSlots?serviceId=${selectedService.id}&roomId=${selectedRoom.id}&staffId=${staffId || ''}&date=${date}`)
+                .then(async res => {
+                    const data = await res.json();
+                    if (!res.ok) {
+                        statusMsg.textContent = data.message || 'Error loading slots.';
+                        statusMsg.style.color = 'red';
+                        container.innerHTML = '';
+                        if (typeof Swal !== 'undefined') {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            Toast.fire({
+                                icon: 'error',
+                                text: data.message || 'Error loading slots.'
+                            });
+                        }
+                        return;
+                    }
+                    const slots = data;
+                    statusMsg.textContent = `${slots.filter(s => s.isAvailable).length} slot(s) available on ${date}.`;
+
+                    if (!slots || slots.length === 0) {
+                        container.innerHTML = '<div>No slots found.</div>';
+                        return;
+                    }
+
+                    // Wrap in a grid container
+                    const gridWrap = document.createElement('div');
+                    gridWrap.className = 'pk-slot-grid';
+
+                    slots.forEach(slot => {
+                        const lbl = document.createElement('label');
+                        lbl.className = 'pk-slot-label';
+
+                        if (slot.isAvailable) {
+                            const isChecked = selectedSlot && selectedSlot.time === slot.time;
+                            lbl.innerHTML = `
+                                <input type="radio" name="slotRadio" value="${slot.startTime}"
+                                       data-time="${slot.time}" data-start="${slot.startTime}" data-end="${slot.endTime}"
+                                       ${isChecked ? 'checked' : ''} />
+                                <span class="pk-slot-btn">${slot.time}</span>
+                            `;
+                        } else {
+                            lbl.title = slot.reason || 'Booked';
+                            lbl.innerHTML = `
+                                <input type="radio" disabled />
+                                <span class="pk-slot-btn">${slot.time}</span>
+                            `;
+                        }
+                        gridWrap.appendChild(lbl);
+                    });
+                    
+                    container.appendChild(gridWrap);
+
+                    document.querySelectorAll('input[name="slotRadio"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            if (this.checked) {
+                                selectedSlot = {
+                                    time: this.getAttribute('data-time'),
+                                    startTime: this.getAttribute('data-start'),
+                                    endTime: this.getAttribute('data-end')
+                                };
+                                selectedStartTimeInput.value = selectedSlot.startTime;
+
+                                const startDt = new Date(selectedSlot.startTime);
+                                const endDt = new Date(selectedSlot.endTime);
+                                const timeStr = `${startDt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${endDt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                                document.getElementById('selectedSlotText').textContent = timeStr;
+                                notice.style.display = 'block';
+                            }
+                        });
+                    });
+                })
+                .catch(() => {
+                    statusMsg.textContent = 'Error loading slots.';
+                    statusMsg.style.color = 'red';
+                });
+        }
+
+        bookingDatePicker.addEventListener('change', loadTimeSlots);
+        staffSelector.addEventListener('change', loadTimeSlots);
+
+        function validateStep3() {
+            const today = new Date();
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            if (bookingDatePicker.value < todayStr) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Date',
+                    text: 'Booking date cannot be in the past. Please select today or a future date.'
+                });
+                bookingDatePicker.focus();
+                return false;
+            }
+
+            const checked = document.querySelector('input[name="slotRadio"]:checked');
+            if (!checked || !selectedStartTimeInput.value) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Time Slot Required',
+                    text: 'Please select an available time slot.'
+                });
+                return false;
+            }
+
+            const slotTime = new Date(selectedStartTimeInput.value);
+            if (slotTime < new Date(Date.now() - 5 * 60 * 1000)) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Time Slot Expired',
+                    text: 'The selected time slot is in the past. Please choose a future time slot.'
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('btnPrev3').addEventListener('click', () => goToStep(2));
+        document.getElementById('btnNext3').addEventListener('click', () => goToStep(4));
+
+        // Step 4: Pokémon details
+        function validateStep4() {
+            const name = PokemonNameInput.value.trim();
+            if (!name) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pokémon Name Required',
+                    text: 'Please enter your Pokémon name.'
+                });
+                PokemonNameInput.focus();
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById('btnPrev4').addEventListener('click', () => goToStep(3));
+        document.getElementById('btnNext4').addEventListener('click', () => goToStep(5));
+
+        // Step 5: Summary
+        function renderSummary() {
+            document.getElementById('sumPokemonName').textContent = PokemonNameInput.value.trim() || 'N/A';
+            document.getElementById('sumServiceName').textContent = selectedService ? `${selectedService.name} (${selectedService.categoryName})` : 'N/A';
+            document.getElementById('sumDuration').textContent = selectedService ? `${selectedService.duration} minutes` : 'N/A';
+            document.getElementById('sumRoomName').textContent = selectedRoom ? `Room ${selectedRoom.number} (${selectedRoom.typeName})` : 'N/A';
+
+            const staffText = staffSelector.options[staffSelector.selectedIndex].text;
+            document.getElementById('sumStaffName').textContent = staffText;
+
+            const dateVal = bookingDatePicker.value;
+            const slotText = document.getElementById('selectedSlotText').textContent;
+            document.getElementById('sumSchedule').textContent = `${dateVal} (${slotText})`;
+
+            document.getElementById('sumNotes').textContent = notesInput.value.trim() || 'None';
+
+            const servicePrice = selectedService ? selectedService.price : 0;
+            const roomPrice = selectedRoom ? selectedRoom.basePrice : 0;
+            const totalPrice = servicePrice + roomPrice;
+
+            document.getElementById('sumServicePrice').textContent = `RM ${servicePrice.toFixed(2)}`;
+            document.getElementById('sumRoomPrice').textContent = `RM ${roomPrice.toFixed(2)}`;
+            document.getElementById('sumTotalPrice').textContent = `RM ${totalPrice.toFixed(2)}`;
+        }
+
+        document.getElementById('btnPrev5').addEventListener('click', () => goToStep(4));
+
+        document.getElementById('btnSubmitBooking').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            if (!validateStep1()) { goToStep(1); return; }
+            if (!validateStep2()) { goToStep(2); return; }
+            if (!validateStep3()) { goToStep(3); return; }
+            if (!validateStep4()) { goToStep(4); return; }
+
+            const slotTime = new Date(selectedStartTimeInput.value);
+            if (slotTime < new Date(Date.now() - 5 * 60 * 1000)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Start Time',
+                    text: 'Booking start time cannot be in the past. Please select a future time slot.'
+                });
+                goToStep(3);
+                return;
+            }
+
+            const pName = PokemonNameInput.value.trim();
+            Swal.fire({
+                title: 'Confirm Booking?',
+                text: `Proceed to payment for ${pName}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed to payment'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Initialize checked service radio if any
+        const initialRadio = document.querySelector('input[name="serviceRadio"]:checked');
+        if (initialRadio) {
+            initialRadio.dispatchEvent(new Event('change'));
+        }
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <text>
+            const hasStartTimeError = @(ViewData.ModelState.ContainsKey("StartTime") ? "true" : "false");
+            const hasRoomError = @(ViewData.ModelState.ContainsKey("RoomId") ? "true" : "false");
+            if (hasStartTimeError) {
+                goToStep(3);
+            } else if (hasRoomError) {
+                goToStep(2);
+            }
+            </text>
+        }
+    </script>
+}

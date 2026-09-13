@@ -1,27 +1,33 @@
-@model TableListingViewModel
+﻿@model TableListingViewModel
 
 @{
     ViewBag.Title = "Service Category List";
 }
 
-<h2>Service Category Management</h2>
+<link rel="stylesheet" href="~/css/ServiceManagement/List.css" asp-append-version="true" />
 
-<p>
-    <a asp-action="CreateServiceCategory">+ Create New Category</a> |
-    <a asp-action="List">View Services List</a>
-</p>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Service Categories
+    </h2>
+    <div class="pk-header-actions">
+        <a asp-action="CreateServiceCategory">+ Create New Category</a>
+        <a asp-action="List">View Services</a>
+    </div>
+</div>
 
-<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
-    Fields = new() {
-        { nameof(ServiceCategory.Id), "Category ID" },
-        { nameof(ServiceCategory.Name), "Category Name" },
-        { nameof(ServiceCategory.Description), "Description" }
-    }
-}' />
+<div style="margin-bottom: 24px;">
+    <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+        Fields = new() {
+            { nameof(ServiceCategory.Id), "Category ID" },
+            { nameof(ServiceCategory.Name), "Category Name" },
+            { nameof(ServiceCategory.Description), "Description" }
+        }
+    }' />
+</div>
 
 <div id="table-container">
     @Html.Partial("_TableList", Model)
 </div>
 
-<br />
-<a asp-action="Index">Back to Dashboard</a>
+<a asp-action="Index" class="pk-btn-outline">Back to Dashboard</a>

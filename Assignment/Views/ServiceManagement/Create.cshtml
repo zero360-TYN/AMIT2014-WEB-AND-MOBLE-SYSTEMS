@@ -4,60 +4,69 @@
     ViewBag.Title = "Create Service";
 }
 
-<h2>Create Service</h2>
+<link rel="stylesheet" href="~/css/ServiceManagement/Form.css" asp-append-version="true" />
 
-<hr />
-<form id="createServiceForm" asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
-    </div>
-    <div>
-        <label asp-for="Description"></label>
-        <input asp-for="Description" />
-        <span asp-validation-for="Description"></span>
-    </div>
-    <div>
-        <label asp-for="Price"></label>
-        <input asp-for="Price" type="number" step="0.01" />
-        <span asp-validation-for="Price"></span>
-    </div>
-    <div>
-        <label asp-for="DurationMinutes"></label>
-        <input asp-for="DurationMinutes" type="number" step="1" />
-        <span asp-validation-for="DurationMinutes"></span>
-    </div>
-    <div>
-        <label asp-for="ServiceCategoryId"></label>
-        <select asp-for="ServiceCategoryId" asp-items="ViewBag.ServiceCategories">
-            @{
-                 if (ViewBag.SelectedCategory != null)
-                 {
-                      <option value="@ViewBag.SelectedCategory.Id" selected>@ViewBag.SelectedCategory.Name</option>
-                 }
-                 else
-                 {
-                      <option value="">-- Select Service Category --</option>                    
-                 }
-             }
-        </select>
-        <span asp-validation-for="ServiceCategoryId"></span>
-        <a asp-action="CreateServiceCategory" style="margin-left: 8px;">+ New Category</a>
-    </div>
-    <br />
-    <div>
-        <button id="createBtn" type="submit">Create</button>
-        <a asp-action="List">Back to List</a> |
-        <a asp-action="Index">Back to Dashboard</a>
-    </div>
-</form>
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Deploy New Service
+    </h2>
+</div>
+
+<div class="pk-form-panel">
+    <form id="createServiceForm" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" style="color: #ef4444; margin-bottom: 16px;"></div>
+        
+        <div class="pk-form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" placeholder="e.g. Full Restore Massage" />
+            <span asp-validation-for="Name" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" placeholder="Detail the procedure..."></textarea>
+            <span asp-validation-for="Description" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" type="number" step="0.01" />
+            <span asp-validation-for="Price" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="DurationMinutes"></label>
+            <input asp-for="DurationMinutes" type="number" />
+            <span asp-validation-for="DurationMinutes" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-form-group">
+            <label asp-for="ServiceCategoryId"></label>
+            <select asp-for="ServiceCategoryId" asp-items="ViewBag.ServiceCategories">
+                <option value="">-- Select Service Category --</option>
+            </select>
+            <span asp-validation-for="ServiceCategoryId" style="color: #ef4444; font-size: 0.85rem;"></span>
+        </div>
+        
+        <div class="pk-actions-bar">
+            <button id="createBtn" type="submit" class="pk-btn-submit">Publish Service</button>
+            <a asp-action="List" class="pk-btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
 
 @section foot {
     <script>
         const form = document.getElementById('createServiceForm');
         const createBtn = document.getElementById('createBtn');
+        const categorySelect = document.getElementById('ServiceCategoryId');
+
+        // Pre-select category if provided via query string and allow modification
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryId = urlParams.get('categoryId');
+        if (categoryId && categorySelect && !categorySelect.value) {
+            categorySelect.value = categoryId;
+        }
 
         createBtn.addEventListener('click', function(event) {
             event.preventDefault();
@@ -66,13 +75,14 @@
             }
 
             Swal.fire({
-                title: 'Are you sure?',
+                title: 'Confirm Deployment',
                 text: "You are about to create a new service.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, create it!'
+                confirmButtonColor: 'var(--pk-blue-500)',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, create it!',
+                customClass: { popup: 'pk-swal-modal' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

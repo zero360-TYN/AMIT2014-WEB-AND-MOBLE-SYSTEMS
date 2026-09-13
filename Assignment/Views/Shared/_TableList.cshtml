@@ -6,7 +6,6 @@
     var totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
     if (totalPages < 1) totalPages = 1;
 
-    // Retrieve requested page parameter from request query string
     var hasPageQuery = int.TryParse(Context.Request.Query["page"], out int requestedPage);
     var currentPage = hasPageQuery ? requestedPage : 1;
     var needsRedirect = false;
@@ -40,11 +39,12 @@
         }
     }
 
-    // Use PagedRows if provided directly; otherwise automatically paginate Model.Rows in-memory
     var pagedRows = Model.PagedRows ?? (Model.Rows != null && Model.Rows.Any()
         ? Model.Rows.ToPagedList(currentPage, pageSize)
         : Enumerable.Empty<List<string>>().ToPagedList(1, pageSize));
 }
+
+<link rel="stylesheet" href="~/css/PartialView/_TableList.css" asp-append-version="true" />
 
 @if (needsRedirect && !string.IsNullOrEmpty(redirectUrl))
 {
@@ -57,8 +57,8 @@
     </script>
 }
 
-<div class="table-list-wrapper">
-    <table class="simple-table">
+<div class="table-list-wrapper pk-table-container">
+    <table class="pk-table">
         <thead>
             <tr>
                 @foreach (var header in Model.Headers)
@@ -83,7 +83,17 @@
             else
             {
                 <tr>
-                    <td colspan="@(Model.Headers.Count > 0 ? Model.Headers.Count : 1)" class="text-center">No data available</td>
+                    <td colspan="@(Model.Headers.Count > 0 ? Model.Headers.Count : 1)" class="text-center" style="padding: 40px;">
+                        <div style="opacity: 0.6;">
+                            <svg width="40" height="40" viewBox="0 0 100 100" style="margin-bottom: 10px;">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#64748b" stroke-width="4"/>
+                                <line x1="5" y1="50" x2="95" y2="50" stroke="#64748b" stroke-width="4"/>
+                                <circle cx="50" cy="50" r="15" fill="none" stroke="#64748b" stroke-width="4"/>
+                                <circle cx="50" cy="50" r="6" fill="#64748b"/>
+                            </svg><br/>
+                            No data records found in the Pokémon Center system.
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -91,7 +101,7 @@
 
     @if (pagedRows.PageCount > 1)
     {
-        <div class="pagination-container">
+        <div class="pk-pagination-container">
             @Html.PagedListPager(pagedRows, page => {
                 var query = new Microsoft.AspNetCore.Routing.RouteValueDictionary();
                 foreach (var key in Context.Request.Query.Keys)
@@ -108,73 +118,12 @@
     }
 </div>
 
-<style>
-    /* Ensure pagination displays strictly on a single horizontal line */
-    .pagination-container {
-        margin-top: 15px;
-        display: flex;
-        align-items: center;
-    }
-
-    .pagination-container ul.pagination,
-    .pagination-container ul {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        list-style: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        gap: 6px !important;
-    }
-
-    .pagination-container li {
-        display: inline-flex !important;
-        margin: 0 !important;
-    }
-
-    .pagination-container li a,
-    .pagination-container li span {
-        display: inline-block !important;
-        padding: 6px 12px !important;
-        text-decoration: none !important;
-        border: 1px solid #ccc !important;
-        border-radius: 4px !important;
-        color: #333 !important;
-        background-color: #fff !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
-        cursor: pointer;
-    }
-
-    .pagination-container li a:hover {
-        background-color: #e9ecef !important;
-        border-color: #bbb !important;
-    }
-
-    .pagination-container li.active span,
-    .pagination-container li.active a {
-        background-color: #007bff !important;
-        color: #fff !important;
-        border-color: #007bff !important;
-        cursor: default;
-    }
-
-    .pagination-container li.disabled span,
-    .pagination-container li.disabled a {
-        color: #aaa !important;
-        pointer-events: none !important;
-        background-color: #f8f9fa !important;
-        border-color: #ddd !important;
-    }
-</style>
-
 <script>
     if (!window._tableListAjaxInitialized) {
         window._tableListAjaxInitialized = true;
 
         document.addEventListener('click', function(e) {
-            const link = e.target.closest('.pagination-container a');
+            const link = e.target.closest('.pk-pagination-container a');
             if (!link) return;
 
             const targetUrl = link.getAttribute('href');

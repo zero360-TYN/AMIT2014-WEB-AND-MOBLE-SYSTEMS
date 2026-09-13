@@ -1,5 +1,23 @@
-<p>Welcome to the Room Management page.</p>
-<a asp-action="List" asp-controller="RoomManagement">View Room List</a>
-<a asp-action="Create" asp-controller="RoomManagement">Create Room</a>
-<a asp-action="RoomTypeList" asp-controller="RoomManagement">View Room Type List</a>
-<a asp-action="CreateRoomType" asp-controller="RoomManagement">Create Room Type</a>
+@{
+    ViewBag.Title = "Room Management Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/RoomManagement/Index.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Facility Control
+    </h2>
+</div>
+
+<div class="pk-welcome-card">
+    <h3 style="font-family: var(--pk-font-serif); color: var(--pk-charcoal-dark); margin-top: 0;">Room &amp; Suite Management</h3>
+    <p style="color: var(--pk-text-main); font-size: 1.1rem;">Configure facility rooms, manage types, and oversee operational capacity.</p>
+    
+    <div class="pk-action-grid">
+        <a asp-action="List" asp-controller="RoomManagement" class="pk-btn-primary">View Room List</a>
+        <a asp-action="Create" asp-controller="RoomManagement" class="pk-btn-outline">Create New Room</a>
+        <a asp-action="RoomTypeList" asp-controller="RoomManagement" class="pk-btn-primary">View Room Types</a>
+        <a asp-action="CreateRoomType" asp-controller="RoomManagement" class="pk-btn-outline">Create Room Type</a>
+    </div>
+</div>

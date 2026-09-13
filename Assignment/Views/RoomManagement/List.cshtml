@@ -1,18 +1,26 @@
-@model TableListingViewModel
+﻿@model TableListingViewModel
 
 @{
     ViewBag.Title = "Room List";
 }
 
-<h2>Room Management</h2>
+<link rel="stylesheet" href="~/css/RoomManagement/List.css" asp-append-version="true" />
 
-<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
-    Fields = new() {
-        { nameof(Room.Id), "Room ID" },
-        { nameof(Room.RoomNumber), "Room Number" },
-        { nameof(RoomType.Name), "Room Type" }
-    }
-}' />
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Room Roster
+    </h2>
+</div>
+
+<div style="margin-bottom: 24px;">
+    <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+        Fields = new() {
+            { nameof(Room.Id), "Room ID" },
+            { nameof(Room.RoomNumber), "Room Number" },
+            { $"{nameof(Room.RoomType)}.{nameof(RoomType.Name)}", "Room Type" }
+        }
+    }' />
+</div>
 
 <div id="table-container">
     @Html.Partial("_TableList", Model)
@@ -22,8 +30,7 @@
     <input type="hidden" name="id" id="deleteRoomId" />
 </form>
 
-<br />
-<a asp-action="Index">Back to Dashboard</a>
+<a asp-action="Index" class="pk-btn-outline">Back to Dashboard</a>
 
 @section foot {
     <script>
@@ -39,13 +46,14 @@
             const name = btn.getAttribute('data-name');
 
             Swal.fire({
-                title: 'Are you sure?',
-                text: `You are about to delete Room ${name}. This action cannot be undone.`,
+                title: 'Confirm Deletion',
+                text: "You are about to delete Room " + name + ". This action cannot be undone.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                cancelButtonColor: 'var(--pk-blue-500)',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: { popup: 'pk-swal-modal' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     deleteRoomId.value = id;

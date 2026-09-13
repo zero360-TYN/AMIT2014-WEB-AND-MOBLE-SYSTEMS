@@ -1,66 +1,82 @@
 @model StaffDetailsViewModel
 
-<div>
-    <h1>Staff Profile</h1>
-    
-    <div>
-        <img src="@Model.AvatarIcon" alt="Avatar" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='/images/user.png';" />
+@{
+    ViewBag.Title = "Staff Profile";
+}
+
+<link rel="stylesheet" href="~/css/StaffManagement/StaffDetails.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Staff Profile
+    </h2>
+</div>
+
+<div class="pk-profile-card">
+    <div class="pk-profile-avatar-sec">
+        <img src="@Model.AvatarIcon" alt="Avatar" referrerpolicy="no-referrer"/>
         <h2>@Model.Username</h2>
         <span>@Model.RoleName</span>
     </div>
 
-    <table class="simple-table">
-        <tbody>
-            <tr>
-                <th>Staff ID</th>
-                <td>@Model.Id</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>@Model.Email</td>
-            </tr>
-            <tr>
-                <th>Account Status</th>
-                <td>@Model.Status</td>
-            </tr>
-            @if (Model.Status == AccountStatusType.blocked)
-            {
+    <div class="pk-profile-details">
+        <table class="simple-table">
+            <tbody>
                 <tr>
-                    <th>Blocking Reason</th>
-                    <td>@(Model.BlockingReason ?? "N/A")</td>
+                    <th>Staff ID</th>
+                    <td>@Model.Id</td>
                 </tr>
                 <tr>
-                    <th>Blocked By</th>
-                    <td>@(Model.BlockBy ?? "System")</td>
+                    <th>Email</th>
+                    <td>@Model.Email</td>
                 </tr>
-            }
-        </tbody>
-    </table>
-    <br />
-    <a asp-action="List" class="btn btn-secondary">Back to List</a>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-
-    <hr class="my-4" />
-
-    <!-- Staff Schedule Timetable Section -->
-    <div class="staff-schedule-section">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="m-0">Staff Schedule & Bookings</h3>
-            <span class="text-muted">Total Handled Bookings: @Model.BookingEvents.Count</span>
+                <tr>
+                    <th>Account Status</th>
+                    @{
+                        string statusColor = Model.Status == AccountStatusType.active ? "#10b981" : 
+                                             Model.Status == AccountStatusType.blocked ? "#ef4444" : "#f59e0b";
+                    }
+                    <td><strong style="color: @statusColor;">@Model.Status.ToString().ToUpper()</strong></td>
+                </tr>
+                @if (Model.Status == AccountStatusType.blocked)
+                {
+                    <tr>
+                        <th>Blocking Reason</th>
+                        <td style="color: #ef4444;">@(Model.BlockingReason ?? "N/A")</td>
+                    </tr>
+                    <tr>
+                        <th>Blocked By</th>
+                        <td>@(Model.BlockBy ?? "System")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        <div class="pk-actions-bar">
+            <a asp-action="List" class="pk-btn-outline">Back to List</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="pk-btn-primary">Edit Profile</a>
         </div>
-
-        <partial name="_VisualSlotTable" model='new VisualSlotTableConfig {
-            Id = "staff_timetable_" + Model.Id,
-            ViewType = SlotViewType.Week,
-            IsReadOnly = true,
-            StartDate = DateTime.Today,
-            BusinessBeginsHour = 8,
-            BusinessEndsHour = 20,
-            CellDuration = 60,
-            Events = Model.BookingEvents,
-            OnEventClick = "showBookingDetailModal"
-        }' />
     </div>
+</div>
+
+<!-- Staff Schedule Timetable Section -->
+<div class="staff-schedule-section">
+    <div class="pk-schedule-header">
+        <h3>Staff Schedule &amp; Bookings</h3>
+        <span>Total Handled Bookings: @Model.BookingEvents.Count</span>
+    </div>
+
+    <partial name="_VisualSlotTable" model='new VisualSlotTableConfig {
+        Id = "staff_timetable_" + Model.Id,
+        ViewType = SlotViewType.Week,
+        IsReadOnly = true,
+        StartDate = DateTime.Today,
+        BusinessBeginsHour = 8,
+        BusinessEndsHour = 20,
+        CellDuration = 60,
+        Events = Model.BookingEvents,
+        OnEventClick = "showBookingDetailModal"
+    }' />
 </div>
 
 <partial name="_BookingDetailModal" />

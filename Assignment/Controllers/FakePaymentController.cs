@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment.Models;
 
 namespace Assignment.Controllers
 {
     /// <summary>
-    /// Placeholder Payment Controller.
-    /// Note: Payment module is handled by a teammate.
-    /// This stub allows the Step-by-Step booking flow to complete and simulate payments during development.
+    /// this just a fake payment controller to simulate the payment process for testing purposes.
+    /// this will be abandoned in the future when the real payment gateway is integrated.
     /// </summary>
     public class FakePaymentController(DB db) : Controller
     {

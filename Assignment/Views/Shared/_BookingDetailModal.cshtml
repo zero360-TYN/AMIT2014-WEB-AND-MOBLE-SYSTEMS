@@ -1,25 +1,23 @@
 @* Reusable Booking Detail Modal Component based on SweetAlert2 *@
+<link rel="stylesheet" href="~/css/PartialView/_BookingDetailModal.css" asp-append-version="true" />
 
 <script>
-    // Global reusable function to display rich, formatted booking details
     window.showBookingDetailModal = function (eventOrData) {
         if (!eventOrData) return;
 
-        // Support both DayPilot event arguments and direct business objects
         const raw = eventOrData.data || eventOrData;
         const bookingId = raw.bookingId || eventOrData.id || "N/A";
-        const status = raw.status || eventOrData.status || "N/A";
+        const status = (raw.status || eventOrData.status || "N/A").toLowerCase();
 
-        // Map status to badge styles
-        const badgeClasses = {
-            confirmed: "bg-primary text-white",
-            pending: "bg-warning text-dark",
-            completed: "bg-success text-white",
-            cancelled: "bg-danger text-white"
-        };
-        const badgeClass = badgeClasses[status.toLowerCase()] || "bg-secondary text-white";
+        let badgeClass = "pk-badge ";
+        switch(status) {
+            case "confirmed": badgeClass += "pk-badge-confirmed"; break;
+            case "pending": badgeClass += "pk-badge-pending"; break;
+            case "completed": badgeClass += "pk-badge-completed"; break;
+            case "cancelled": badgeClass += "pk-badge-cancelled"; break;
+            default: badgeClass += "bg-secondary text-white"; break;
+        }
 
-        // Format timestamps cleanly
         const rawStart = raw.start || eventOrData.start || "";
         const rawEnd = raw.end || eventOrData.end || "";
         const startStr = rawStart ? rawStart.replace("T", " ").substring(0, 16) : "N/A";
@@ -27,41 +25,47 @@
 
         Swal.fire({
             title: `Booking #${bookingId}`,
+            customClass: {
+                popup: 'pk-swal-modal',
+                title: 'pk-swal-title',
+                confirmButton: 'pk-btn-confirm',
+                cancelButton: 'pk-btn-cancel'
+            },
             html: `
-                <div class="text-center mb-3">
-                    <span class="badge ${badgeClass} px-3 py-2 fs-6 text-uppercase">${status}</span>
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <span class="${badgeClass}">${status}</span>
                 </div>
-                <table class="table table-sm table-bordered text-start mb-0">
+                <table class="pk-swal-table" style="text-align: left;">
                     <tbody>
                         ${raw.roomNumber ? `
                         <tr>
-                            <th style="width: 35%;" class="bg-light">Room</th>
+                            <th>Room</th>
                             <td><strong>${raw.roomNumber}</strong></td>
                         </tr>` : ''}
                         <tr>
-                            <th style="width: 35%;" class="bg-light">Customer</th>
-                            <td>${raw.customerName || 'N/A'} ${raw.customerEmail ? `<br><small class="text-muted">${raw.customerEmail}</small>` : ''}</td>
+                            <th>Customer</th>
+                            <td>${raw.customerName || 'N/A'} ${raw.customerEmail ? `<br><small style="color: #64748b;">${raw.customerEmail}</small>` : ''}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">Pokemon</th>
+                            <th>Pokemon</th>
                             <td><strong>${raw.pokemonName || 'N/A'}</strong></td>
                         </tr>
                         <tr>
-                            <th class="bg-light">Service</th>
+                            <th>Service</th>
                             <td>${raw.serviceName || eventOrData.text || 'N/A'}</td>
                         </tr>
                         ${raw.staffName ? `
                         <tr>
-                            <th class="bg-light">Assigned Staff</th>
+                            <th>Assigned Staff</th>
                             <td>${raw.staffName}</td>
                         </tr>` : ''}
                         <tr>
-                            <th class="bg-light">Schedule</th>
+                            <th>Schedule</th>
                             <td>${startStr} ~ ${endStr}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">Total Price</th>
-                            <td><strong class="text-success">${raw.totalPrice || 'N/A'}</strong></td>
+                            <th>Total Price</th>
+                            <td><strong style="color: #0284c7;">${raw.totalPrice || 'N/A'}</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,8 +73,7 @@
             showCancelButton: true,
             confirmButtonText: 'View Full Details',
             cancelButtonText: 'Close',
-            confirmButtonColor: '#0d6efd',
-            cancelButtonColor: '#6c757d'
+            buttonsStyling: false
         }).then((result) => {
             if (result.isConfirmed && bookingId !== "N/A") {
                 window.location.href = `/BookingManagement/Details/${bookingId}`;

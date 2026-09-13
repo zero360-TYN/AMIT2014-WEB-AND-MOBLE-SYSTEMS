@@ -1,3 +1,21 @@
-﻿<p>Welcome to the Staff Management page.</p>
-<a asp-action="List" asp-controller="StaffManagement">View Staff List</a>
-<a asp-action="Assign" asp-controller="StaffManagement">Assign Staff</a>
+@{
+    ViewBag.Title = "Staff Management Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/StaffManagement/Index.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Staff Management
+    </h2>
+</div>
+
+<div class="pk-welcome-card">
+    <h3 style="font-family: var(--pk-font-serif); color: var(--pk-charcoal-dark); margin-top: 0;">Personnel Administration</h3>
+    <p style="color: var(--pk-text-main); font-size: 1.1rem;">Manage center personnel, view staff details, and assign new roles.</p>
+    
+    <div class="pk-action-links">
+        <a asp-action="List" asp-controller="StaffManagement" class="pk-btn-primary">View Staff List</a>
+        <a asp-action="Assign" asp-controller="StaffManagement" class="pk-btn-outline">Assign Staff</a>
+    </div>
+</div>

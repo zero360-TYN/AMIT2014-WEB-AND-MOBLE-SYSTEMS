@@ -1,0 +1,43 @@
+/* Account Status Analytics Styles */
+
+.pk-page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--pk-blue-200);
+    position: relative;
+}
+
+.pk-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 150px;
+    height: 2px;
+    background: var(--pk-blue-500);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.pk-dashboard-title {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    font-size: 2.2rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.pk-module-label {
+    display: block;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #ef4444; /* Cyber red for security/account status */
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.pk-charts-container {
+    margin-top: 10px;
+}

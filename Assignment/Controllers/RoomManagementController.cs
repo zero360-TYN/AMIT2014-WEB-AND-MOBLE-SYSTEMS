@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment.Models;
@@ -36,7 +36,7 @@ namespace Assignment.Controllers
                     r.RoomNumber,
                     r.RoomType?.Name ?? "N/A",
                     r.RoomType != null ? r.RoomType.BasePrice.ToString("C", new System.Globalization.CultureInfo("en-MY")) : "N/A",
-                    $"<a href='/RoomManagement/Details/{r.Id}'>Details</a> | <a href='/RoomManagement/Edit/{r.Id}'>Edit</a> | <button type='button' class='btn-delete' data-id='{r.Id}' data-name='{r.RoomNumber}'>Delete</button>"
+                    $"<a href='/RoomManagement/Details/{r.Id}' class='pk-action-link'>Details</a> <a href='/RoomManagement/Edit/{r.Id}' class='pk-action-link'>Edit</a> <button type='button' class='btn-delete pk-action-btn' data-id='{r.Id}' data-name='{r.RoomNumber}'>Delete</button>"
                 };
                 tableData.Rows.Add(row);
             }
@@ -310,7 +310,7 @@ namespace Assignment.Controllers
                     rt.Description ?? "N/A",
                     rt.BasePrice.ToString("C", new System.Globalization.CultureInfo("en-MY")),
                     rt.ServiceCategory?.Name ?? "N/A",
-                    $"<a href='/RoomManagement/RoomTypeDetails/{rt.Id}'>Details</a> | <a href='/RoomManagement/EditRoomType/{rt.Id}'>Edit</a>"
+                    $"<a href='/RoomManagement/RoomTypeDetails/{rt.Id}' class='pk-action-link'>Details</a> <a href='/RoomManagement/EditRoomType/{rt.Id}' class='pk-action-link'>Edit</a>"
                 };
                 tableData.Rows.Add(row);
             }
@@ -438,7 +438,7 @@ namespace Assignment.Controllers
                 .Include(b => b.Staff).ThenInclude(s => s.Account).ThenInclude(a => a.AccountDetail)
                 .Include(b => b.BookingDetail)
                 .Include(b => b.Room)
-                .Where(b => roomIds.Contains(b.RoomId))
+                .Where(b => roomIds.Contains(b.RoomId) && b.Status != BookingStatus.cancelled)
                 .ToList();
 
             // Map bookings to slot event items with structured metadata payload

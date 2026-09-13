@@ -61,9 +61,9 @@ public class VisualSlotTableConfig
     public SlotViewType ViewType { get; set; } = SlotViewType.Week;
 
     /// <summary>
-    /// Whether the table is in read-only mode (true: display only; false: customer can click to select slot)
+    /// Whether the table is in read-only mode (defaults to true for schedule viewing)
     /// </summary>
-    public bool IsReadOnly { get; set; } = false;
+    public bool IsReadOnly { get; set; } = true;
 
     /// <summary>
     /// Base date for initial display (defaults to today)

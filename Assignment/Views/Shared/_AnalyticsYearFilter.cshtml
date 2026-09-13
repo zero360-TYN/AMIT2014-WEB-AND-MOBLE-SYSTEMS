@@ -1,0 +1,21 @@
+@model AnalyticsChartsViewModel
+
+<link rel="stylesheet" href="~/css/PartialView/_AnalyticsYearFilter.css" asp-append-version="true" />
+
+<form method="get" class="pk-year-filter">
+    <label for="year">Temporal Cycle:</label>
+    <select name="year" id="year" onchange="this.form.submit()">
+        @foreach (var year in Model.AvailableYears)
+        {
+            if (year == Model.SelectedYear)
+            {
+                <option value="@year" selected>@year</option>
+            }
+            else
+            {
+                <option value="@year">@year</option>
+            }
+        }
+    </select>
+    <noscript><button type="submit">Filter</button></noscript>
+</form>

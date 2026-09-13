@@ -4,16 +4,26 @@
     ViewBag.Title = "Staff List";
 }
 
-<h2>Staff Management</h2>
+<link rel="stylesheet" href="~/css/StaffManagement/List.css" asp-append-version="true" />
 
-<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
-    Fields = new() {
-        { nameof(Staff.Id), "Staff ID" },
-        { nameof(AccountDetail.Username), "Staff Name" },
-        { nameof(Account.Email), "Email" }
-    }
-}' />
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Personnel Roster
+    </h2>
+</div>
+
+<div style="margin-bottom: 24px;">
+    <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+        Fields = new() {
+            { nameof(Staff.Id), "Staff ID" },
+            { $"{nameof(Staff.Account)}.{nameof(Account.AccountDetail)}.{nameof(AccountDetail.Username)}", "Staff Name" },
+            { $"{nameof(Staff.Account)}.{nameof(Account.Email)}", "Email" }
+        }
+    }' />
+</div>
 
 <div id="table-container">
     @Html.Partial("_TableList", Model)
 </div>
+
+<a asp-action="Index" class="pk-btn-outline">Back to Dashboard</a>

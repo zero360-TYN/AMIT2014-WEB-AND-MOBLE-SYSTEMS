@@ -4,17 +4,28 @@
     ViewBag.Title = "Service List";
 }
 
-<h2>Service Management</h2>
+<link rel="stylesheet" href="~/css/ServiceManagement/List.css" asp-append-version="true" />
 
-<partial name="_AjaxSearch" model='new AjaxSearchViewModel {
-    Fields = new() {
-        { nameof(Service.Id), "Service ID" },
-        { nameof(Service.Name), "Service Name" },
-        { $"{nameof(Service.ServiceCategory)}.{nameof(ServiceCategory.Name)}", "Category" },
-        { nameof(Service.Price), "Price" },
-        { nameof(Service.DurationMinutes), "Duration" }
-    }
-}' />
+<div class="pk-page-header">
+    <h2 class="pk-dashboard-title">
+        Treatment Services
+    </h2>
+    <div class="pk-header-actions">
+        <a asp-action="ServiceCategoryList">View Categories</a>
+    </div>
+</div>
+
+<div style="margin-bottom: 24px;">
+    <partial name="_AjaxSearch" model='new AjaxSearchViewModel {
+        Fields = new() {
+            { nameof(Service.Id), "Service ID" },
+            { nameof(Service.Name), "Service Name" },
+            { $"{nameof(Service.ServiceCategory)}.{nameof(ServiceCategory.Name)}", "Category" },
+            { nameof(Service.Price), "Price" },
+            { nameof(Service.DurationMinutes), "Duration" }
+        }
+    }' />
+</div>
 
 <div id="table-container">
     @Html.Partial("_TableList", Model)
@@ -24,9 +35,7 @@
     <input type="hidden" name="id" id="deleteServiceId" />
 </form>
 
-<br />
-<a asp-action="ServiceCategoryList">View Service Category List</a> |
-<a asp-action="Index">Back to Dashboard</a>
+<a asp-action="Index" class="pk-btn-outline">Back to Dashboard</a>
 
 @section foot {
     <script>
@@ -42,13 +51,14 @@
             const name = btn.getAttribute('data-name');
 
             Swal.fire({
-                title: 'Are you sure?',
-                text: `You are about to delete Service "${name}". This action cannot be undone.`,
+                title: 'Confirm Deletion',
+                text: 'You are about to delete Service "' + name + '". This action cannot be undone.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                cancelButtonColor: 'var(--pk-blue-500)',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: { popup: 'pk-swal-modal' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     deleteServiceId.value = id;

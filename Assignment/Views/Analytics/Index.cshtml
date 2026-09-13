@@ -1,5 +1,82 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model Assignment.Models.AnalyticsDashboardViewModel
+
 @{
+    ViewBag.Title = "Analytics Dashboard";
 }
+
+<link rel="stylesheet" href="~/css/Analytics/Index.css" asp-append-version="true" />
+
+<div class="pk-page-header">
+    <h1 class="pk-dashboard-title">Analytics Dashboard</h1>
+</div>
+
+<partial name="_AnalyticsNavigation" />
+
+<div class="pk-stats-grid">
+    <!-- Services & Categories Card -->
+    <div class="pk-stat-card">
+        <h2 class="pk-card-title">Services & Categories</h2>
+        <div class="pk-stat-row">
+            <span class="pk-stat-label">Service Categories</span>
+            <span class="pk-stat-value">@Model.ServiceCategoryCount</span>
+        </div>
+        <div class="pk-stat-row">
+            <span class="pk-stat-label">Services</span>
+            <span class="pk-stat-value">@Model.ServiceCount</span>
+        </div>
+    </div>
+
+    <!-- Room Types & Rooms Card -->
+    <div class="pk-stat-card">
+        <h2 class="pk-card-title">Room Types & Rooms</h2>
+        <div class="pk-stat-row">
+            <span class="pk-stat-label">Room Types</span>
+            <span class="pk-stat-value">@Model.RoomTypeCount</span>
+        </div>
+        <div class="pk-stat-row">
+            <span class="pk-stat-label">Rooms</span>
+            <span class="pk-stat-value">@Model.RoomCount</span>
+        </div>
+    </div>
+
+    <!-- Accounts by Role Card -->
+    <div class="pk-stat-card">
+        <h2 class="pk-card-title">Accounts by Role</h2>
+        <ul class="pk-stat-list">
+            @foreach (var role in Model.AccountRoleCounts)
+            {
+                <li>
+                    <span class="pk-stat-label">@role.Key</span>
+                    <span class="pk-stat-value">@role.Value</span>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Bookings by Status Card -->
+    <div class="pk-stat-card">
+        <div class="pk-card-header-flex">
+            <h2 class="pk-card-title">Bookings by Status</h2>
+            <div class="pk-stat-highlight">
+                <span class="pk-stat-label">Total</span>
+                <span class="pk-stat-value primary">@Model.TotalBookings</span>
+            </div>
+        </div>
+        <ul class="pk-stat-list">
+            @foreach (var status in Model.BookingStatusCounts)
+            {
+                var badgeClass = "badge-default";
+                var statusStr = status.Key.ToString().ToLower();
+                if (statusStr == "confirmed") badgeClass = "badge-confirmed";
+                else if (statusStr == "pending") badgeClass = "badge-pending";
+                else if (statusStr == "completed") badgeClass = "badge-completed";
+                else if (statusStr == "cancelled") badgeClass = "badge-cancelled";
+
+                <li>
+                    <span class="pk-stat-label">@status.Key.ToString()</span>
+                    <span class="pk-dashboard-badge @badgeClass">@status.Value</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

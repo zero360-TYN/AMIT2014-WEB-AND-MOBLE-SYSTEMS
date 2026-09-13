@@ -1,0 +1,239 @@
+/* _TableList Component */
+.pk-table-container {
+    background: var(--pk-bg-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: var(--pk-border-soft);
+    overflow: hidden;
+    position: relative;
+}
+
+.pk-table-container::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 300px;
+    height: 300px;
+    background-image: var(--pk-watermark);
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pk-table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+    z-index: 1;
+}
+
+.pk-table th {
+    background-color: var(--pk-charcoal-dark);
+    color: var(--pk-bg-white);
+    font-family: var(--pk-font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--pk-blue-400);
+}
+
+.pk-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--pk-blue-100);
+    color: var(--pk-text-main);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.pk-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.pk-table tbody tr:hover {
+    background-color: var(--pk-blue-100);
+}
+
+/* Pagination overrides */
+.pk-pagination-container {
+    padding: 12px 16px;
+    border-top: var(--pk-border-soft);
+    display: flex;
+    align-items: center;
+    background-color: var(--pk-bg-soft);
+    position: relative;
+    z-index: 1;
+}
+
+.pk-pagination-container ul.pagination,
+.pk-pagination-container ul {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 8px !important;
+}
+
+.pk-pagination-container li {
+    display: inline-flex !important;
+    margin: 0 !important;
+}
+
+.pk-pagination-container li a,
+.pk-pagination-container li span {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px !important;
+    text-decoration: none !important;
+    border: 1px solid var(--pk-blue-200) !important;
+    border-radius: 8px !important;
+    color: var(--pk-text-main) !important;
+    background-color: var(--pk-bg-white) !important;
+    font-size: 0.9rem !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.pk-pagination-container li a:hover {
+    background-color: var(--pk-blue-100) !important;
+    border-color: var(--pk-blue-400) !important;
+    color: var(--pk-blue-600) !important;
+}
+
+.pk-pagination-container li.active span,
+.pk-pagination-container li.active a {
+    background: linear-gradient(135deg, var(--pk-blue-500), var(--pk-blue-600)) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: var(--pk-glow-blue) !important;
+    cursor: default;
+}
+
+.pk-pagination-container li.disabled span,
+.pk-pagination-container li.disabled a {
+    color: #cbd5e1 !important;
+    pointer-events: none !important;
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Base override for action links in table */
+.pk-table a {
+    color: var(--pk-blue-600);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.pk-table a:hover {
+    text-decoration: underline;
+    color: var(--pk-blue-500);
+}
+/* Action buttons styling */
+.pk-table td a,
+.pk-table td button {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pk-table td:last-child {
+    white-space: nowrap;
+}
+
+/* Action links (Edit, Details, etc.) */
+.pk-table td:last-child a {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: var(--pk-blue-100);
+    color: var(--pk-blue-600);
+    border-radius: 6px;
+    text-decoration: none !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-right: 4px;
+    border: 1px solid transparent;
+}
+
+.pk-table td:last-child a:hover {
+    background-color: var(--pk-blue-500);
+    color: white;
+    box-shadow: var(--pk-glow-cyan);
+}
+
+/* Delete Button */
+.btn-delete, .pk-table td:last-child button {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #fee2e2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--pk-font-sans);
+}
+
+.btn-delete:hover, .pk-table td:last-child button:hover {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Hide the raw text pipes '|' */
+.pk-table td:last-child {
+    color: transparent;
+}
+/* Explicit action buttons styling */
+.pk-action-link,
+.pk-action-btn {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    margin: 2px !important;
+}
+
+.pk-action-link {
+    background-color: var(--pk-blue-50) !important;
+    color: var(--pk-blue-600) !important;
+    border: 1px solid var(--pk-blue-200) !important;
+}
+
+.pk-action-link:hover {
+    background-color: var(--pk-blue-500) !important;
+    color: white !important;
+    box-shadow: var(--pk-glow-cyan) !important;
+    border-color: var(--pk-blue-500) !important;
+}
+
+.pk-action-btn {
+    background-color: #fef2f2 !important;
+    color: #ef4444 !important;
+    border: 1px solid #fecaca !important;
+    cursor: pointer !important;
+}
+
+.pk-action-btn:hover {
+    background-color: #ef4444 !important;
+    color: white !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+}

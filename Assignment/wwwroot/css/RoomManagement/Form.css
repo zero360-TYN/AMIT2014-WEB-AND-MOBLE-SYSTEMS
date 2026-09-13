@@ -1,0 +1,149 @@
+/* Room Management - Form Styles */
+.pk-page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--pk-blue-200);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.pk-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 150px;
+    height: 2px;
+    background: var(--pk-blue-500);
+    box-shadow: var(--pk-glow-cyan);
+}
+
+.pk-dashboard-title {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+    font-size: 2.2rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.pk-form-panel {
+    background: var(--pk-bg-white);
+    border: var(--pk-border-soft);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pk-form-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -10%;
+    width: 250px;
+    height: 250px;
+    background-image: var(--pk-watermark);
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pk-form-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.pk-form-group {
+    margin-bottom: 20px;
+}
+
+.pk-form-group label {
+    font-weight: 600;
+    color: var(--pk-charcoal-light);
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.pk-form-group input[type="text"],
+.pk-form-group input[type="number"],
+.pk-form-group select,
+.pk-form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--pk-blue-200);
+    border-radius: 8px;
+    font-family: var(--pk-font-sans);
+    font-size: 1rem;
+    color: var(--pk-charcoal-dark);
+    background-color: var(--pk-bg-soft);
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.pk-form-group input[type="text"]:focus,
+.pk-form-group input[type="number"]:focus,
+.pk-form-group select:focus,
+.pk-form-group textarea:focus {
+    border-color: var(--pk-blue-400);
+    box-shadow: var(--pk-glow-cyan);
+    background-color: var(--pk-bg-white);
+}
+
+.pk-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.pk-actions-bar {
+    margin-top: 30px;
+    display: flex;
+    gap: 16px;
+}
+
+.pk-btn-submit {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pk-blue-500), var(--pk-blue-600));
+    color: white !important;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: var(--pk-glow-blue);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--pk-font-sans);
+}
+
+.pk-btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--pk-glow-cyan-strong);
+}
+
+.pk-btn-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--pk-text-main) !important;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid #cbd5e1;
+    transition: all 0.2s ease;
+    font-family: var(--pk-font-sans);
+}
+
+.pk-btn-outline:hover {
+    background: var(--pk-bg-white);
+    color: var(--pk-charcoal-dark) !important;
+    border-color: #94a3b8;
+}

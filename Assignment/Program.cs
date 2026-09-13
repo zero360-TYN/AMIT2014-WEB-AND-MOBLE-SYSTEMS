@@ -27,7 +27,8 @@ builder.Services
      });
 
 var app = builder.Build();
-//DbSeeder 
+//DbSeeder
+//Important: disable this after finish the assignment
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DB>();

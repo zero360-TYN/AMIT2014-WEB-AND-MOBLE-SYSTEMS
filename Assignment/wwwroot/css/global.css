@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Color Palette */
+    --pk-bg-white: #ffffff;
+    --pk-bg-soft: #f8fafc;
+    --pk-blue-100: #e0f2fe;
+    --pk-blue-200: #bae6fd;
+    --pk-blue-400: #38bdf8;
+    --pk-blue-500: #0ea5e9;
+    --pk-blue-600: #0284c7;
+    --pk-charcoal-dark: #0f172a;
+    --pk-charcoal-light: #1e293b;
+    --pk-text-main: #334155;
+    
+    /* Typography */
+    --pk-font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
+    --pk-font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    
+    /* Effects */
+    --pk-glow-cyan: 0 0 12px rgba(56, 189, 248, 0.4);
+    --pk-glow-cyan-strong: 0 0 20px rgba(56, 189, 248, 0.6), 0 0 4px rgba(56, 189, 248, 0.8);
+    --pk-glow-blue: 0 0 15px rgba(2, 132, 199, 0.3);
+    --pk-border-soft: 1px solid #e2e8f0;
+    
+    /* Faded Pokemon Watermark (Pokeball minimal tech SVG) */
+    --pk-watermark: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><circle cx="50" cy="50" r="45" fill="none" stroke="%230f172a" stroke-width="4"/><line x1="5" y1="50" x2="95" y2="50" stroke="%230f172a" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="none" stroke="%230f172a" stroke-width="4"/><circle cx="50" cy="50" r="6" fill="%230f172a"/></svg>');
+}
+
+body {
+    font-family: var(--pk-font-sans);
+    color: var(--pk-text-main);
+    background-color: var(--pk-bg-soft);
+}
+
+h1, h2, h3, h4, h5, h6, .pk-serif {
+    font-family: var(--pk-font-serif);
+    color: var(--pk-charcoal-dark);
+}
+
+/* Animations */
+@keyframes pkNeonPulse {
+    0% { box-shadow: 0 0 5px rgba(56,189,248,0.2); }
+    50% { box-shadow: 0 0 15px rgba(56,189,248,0.6); }
+    100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); }
+}
+
+@keyframes pkLightStreak {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
