@@ -10,18 +10,14 @@
 
 <div class="user-management-page">
     <div class="user-management-topcontainer">
-        <div class="roleFilter">
-            <select id="userRole" class="role">
-                <option value="">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="staff">Staff</option>
-                <option value="user">User</option>
-            </select>
-        </div>
         <div class="user-management-search">
             <form asp-controller="Management" asp-action="User" method="post">
                 @Html.Input(type: "search", placeholder: "Search", aspfor: "search", id: "searchUser")
                 @Html.Button("Go", type: "submit", id: "searchUser-btn")
+                @if (!string.IsNullOrEmpty(ViewBag.Search))
+                    {
+                        <a href="@Url.Action("User", "Management")" id="returnUser-btn">Return</a>
+                    }
             </form>
         </div>
 
@@ -49,7 +45,7 @@
                 <tbody>
                     @foreach (var detail in Model)
                     {
-                        <tr>
+                        <tr data-role="@detail.accountDetail.RoleId">
                             <td>@detail.Email</td>
                             <td>
                                 @switch (detail.accountDetail.RoleId)
@@ -90,7 +86,6 @@
 
         </div>
     </div>
-
 
 </div>
 
