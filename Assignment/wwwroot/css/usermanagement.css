@@ -1,0 +1,180 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background: white;
+    margin: 0;
+}
+
+.user-management-page {
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+}
+
+.user-management-topcontainer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-left: 25px;
+}
+
+#searchUser {
+    padding: 0px 12px;
+    width: 200px;
+    height: 25px;
+    border-radius: 3px;
+    border: 1px solid #808080;
+    outline: none;
+}
+
+#searchUser:hover {
+    border-color: #c4c4c4;
+}
+
+#searchUser:focus {
+    border-color: #1a62e7;
+    box-shadow: 0 0 2px;
+}
+
+#searchUser-btn {
+    height: 25px;
+    width: 40px;
+    border-radius: 7px;
+    border: 1px solid black;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+#searchUser-btn:hover {
+    background-color: black;
+    color: white;
+}
+
+#userRole {
+    justify-content: center;
+    height: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#userRole:hover {
+    border-color: #c4c4c4;
+}
+
+#userRole:focus  {
+    border-color: #1a62e7;
+    box-shadow: 0 0 2px;
+}
+
+.user-management-tablecontainter {
+    width: 100%;
+    padding: 0px 20px;
+    box-sizing: border-box;
+}
+
+#user-management-userCount {
+    font-weight: 550;
+    margin-left: 10px;
+    margin-bottom: 5px;
+}
+
+.user-management-table {
+    width: 100%;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 20px;
+    height: fit-content;
+}
+
+.user-management-table table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    height: auto;
+}
+
+.user-management-table th, .user-management-table td {
+    text-align: left;
+    padding: 12px 16px;
+
+    font-size: 15px;
+}
+
+.user-management-table th {
+    background-color: #dedede;
+    box-shadow: 0 0 5px #5c5c5c;
+    border: none;
+    outline: none;
+    white-space: nowrap;
+}
+
+.user-management-table button {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+    border-radius: 6px;
+    width: 70px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.user-management-table button:hover {
+    background-color: red;
+    color: white;
+    border: 1px solid red;
+    border-radius: 6px;
+    width: 70px;
+    height: 30px;
+    cursor: pointer;
+}
+
+#user-management-table-statusLabel {
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 0;
+}
+
+.active-status {
+    background-color: #ceffbe;
+    color: #11a500;
+}
+
+.blocked-status {
+    background-color: #ffc4c4;
+    color: #cb0000;
+}
+
+
+/* ============= BLOCK POP UP INTERFACE =============*/
+
+.user-block-page {
+    width: 700px;
+    height: auto;
+}
+
+
+/* ============= UNBLOCK POP UP INTERFACE =============*/
+
+.user-unblock-confirm-btn, .user-block-confirm-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.user-unblock-confirm-btn:hover, .user-block-confirm-btn:hover {
+    background-color: black;
+    color: white;
+}
+
+.user-unblock-cancel-btn, .user-block-cancel-btn {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+}
+
+.user-unblock-cancel-btn:hover, .user-block-cancel-btn:hover {
+    background-color: red;
+    color: white;
+}

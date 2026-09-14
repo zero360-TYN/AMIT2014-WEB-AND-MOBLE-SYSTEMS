@@ -1,0 +1,72 @@
+﻿@using Assignment.Helpers;
+@model Assignment.Models.Booking;
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Success";
+
+    var payment = Model.Payments.FirstOrDefault();
+
+    decimal price = Model.TotalPrice;
+    decimal tax = price * 0.06m;
+    decimal totalPrice = price + tax;
+}
+
+<link rel="stylesheet" href="/css/Payment/payment_details.css" />
+
+<div class="payment-details-page">
+    <img src="~/images/Payment/success.png" id="payment-success-image">
+    <div class="payment-row">
+        <span class="payment-label">Payment ID</span>
+        <span class="payment-value">@payment?.Id</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Order ID</span>
+        <span class="payment-value">@Model.Id</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Type</span>
+        <span class="payment-value">@Model.Service.Name</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Customer Name</span>
+        <span class="payment-value">@payment?.PaymentDetail.Name</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Amount</span>
+        <span class="payment-value-amount">RM @totalPrice.ToString("0.00")</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Payment Method</span>
+        <span class="payment-value">Online Banking</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Payment Date</span>
+        <span class="payment-value">@payment?.CreatedAt</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Status</span>
+        <span class="payment-details-status">Success</span>
+    </div>
+
+    <div class="payment-row">
+        <span class="payment-label">Receipt</span>
+        <a href="@Url.Action("Receipt", "Payment", new { bookingId = Model.Id })"
+           class="payment-success-receipt-btn">
+            View Receipt
+        </a>
+    </div>
+
+    <div class="payment-row-total">
+        <span class="class-label">Total</span>
+        <span class="payment-value-total">RM @totalPrice.ToString("0.00")</span>
+    </div>
+    <a href="/Home/Index">@Html.Button("Return to Main Page", id: "payment-success-return")</a>
+</div>

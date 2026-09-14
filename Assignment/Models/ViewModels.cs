@@ -1,0 +1,43 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Assignment.Models
+{
+    public class SignUpVM   
+    {
+        [Key]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string? Email { get; set; }
+        [MaxLength(100)]
+        public string? Username { get; set; }
+        [StringLength(12, MinimumLength = 8, ErrorMessage = "The password must be between 8 and 12 characters long.")]
+        public string? Password { get; set; }
+        [Compare("Password", ErrorMessage = "The password is not matching.")]
+        [DisplayName("Confirm Password")]
+        public string? ConfirmPassword { get; set; }
+    }
+
+    public class UserVM
+    {
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public AccountDetail accountDetail { get; set; }
+        public AccountStatus accountStatus { get; set; }
+    }
+
+    public class LoginVM
+    {
+        [EmailAddress]
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+    }
+
+    public class PaymentVM
+    {
+        public int Id { get; set; }
+        public decimal Price { get; set; }
+        public PaymentDetail paymentDetail { get; set; } = new PaymentDetail();
+        public Booking booking {  get; set; }
+    }
+}

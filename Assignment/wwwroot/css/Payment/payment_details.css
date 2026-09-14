@@ -1,0 +1,160 @@
+﻿
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#payment-success-image {
+    width: 90px;
+    height: auto;
+    border-radius: 30px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.payment-details-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid grey;
+    width: min(800px, 90%);
+    margin-bottom: 10px;
+    height: 50px;
+    align-items: center;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 0 20px;
+    background-color: white;
+}
+
+.payment-row-total {
+    margin-top: 10px;
+    margin-left: 650px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.payment-label {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.payment-value, .payment-details-status, .payment-details-status-pending {
+    font-size: 17px;
+}
+
+.payment-details-status {
+    display: inline-block;
+    background-color: #a8ff8c;
+    color: #0e8c00;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 0;
+}
+
+.payment-details-status-pending {
+    display: inline-block;
+    background-color: #ffea99;
+    color: #828500;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 0;
+}
+
+.payment-success-receipt-btn {
+    padding: 7px 13px;
+    border: 2px solid rgb(186, 193, 2);
+    text-decoration: none;
+    border-radius: 10px;
+    color: black;
+    background-color: rgb(248, 248, 162);
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.payment-success-receipt-btn:hover {
+    border-color: rgb(255, 255, 0);
+    background-color: rgb(255, 255, 0);
+}
+
+#payment-success-return {
+    margin-top: 20px;
+    width: 200px;
+    height: 35px;
+    border-radius: 10px;
+    border: 2px solid #808080;
+    background-color: rgb(211 211 211);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#payment-success-return:hover {
+    background-color: black;
+    border-color: black;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+
+/*====*/
+
+.payment-verification-title {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-right: 560px;
+}
+
+.payment-verification-btn {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+.verification-approve-btn, .verification-cancel-btn {
+    margin-top: 20px;
+    width: 150px;
+    height: 35px;
+    border-radius: 10px;
+    border: 2px solid #808080;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: black;
+}
+
+.verification-cancel-btn {
+    background-color: white;
+    font-weight: bold;
+}
+
+.verification-approve-btn {
+    background-color: rgb(211 211 211);
+    font-weight: bold;
+}
+
+.verification-approve-btn:hover, .verification-cancel-btn:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}

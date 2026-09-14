@@ -1,0 +1,168 @@
+﻿@model Assignment.Models.Booking
+
+@{
+    Layout = null;
+
+    var payment = Model.Payments.FirstOrDefault();
+
+    decimal price = Model.TotalPrice;
+    decimal tax = price * 0.06m;
+    decimal totalPrice = price + tax;
+}
+
+<head>
+    <title>Payment Receipt</title>
+    <link rel="stylesheet" href="~/css/Payment/receipt.css">
+</head>
+
+
+<body>
+
+    <div class="receipt">
+
+        <div class="receipt-header">
+
+            <h1>Pokemon Therapy Centra</h1>
+
+            <p>Payment Receipt</p>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Payment ID
+            </span>
+
+            <span>
+                @payment?.Id
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Order ID
+            </span>
+
+            <span>
+                @Model.Id
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Customer Name
+            </span>
+
+            <span>
+                @payment?.PaymentDetail?.Name
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Service
+            </span>
+
+            <span>
+                @Model.Service?.Name
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Payment Method
+            </span>
+
+            <span>
+                Online Banking
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Payment Date
+            </span>
+
+            <span>
+                @payment?.CreatedAt.ToString("dd-MM-yyyy HH:mm:ss")
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Status
+            </span>
+
+            <span class="success">
+                Success
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Price
+            </span>
+
+            <span>
+                RM @price.ToString("0.00")
+            </span>
+
+        </div>
+
+
+        <div class="receipt-row">
+
+            <span class="receipt-label">
+                Tax (6%)
+            </span>
+
+            <span>
+                RM @tax.ToString("0.00")
+            </span>
+
+        </div>
+
+
+        <div class="receipt-total">
+
+            <span>
+                Total
+            </span>
+
+            <span>
+                RM @totalPrice.ToString("0.00")
+            </span>
+
+        </div>
+
+
+        <button class="print-btn" onclick="window.print()">
+            Download / Save PDF
+        </button>
+
+    </div>
+
+</body>

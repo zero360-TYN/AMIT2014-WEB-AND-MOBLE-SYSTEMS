@@ -1,0 +1,79 @@
+﻿@using Assignment.Helpers;
+@model Assignment.Models.PaymentVM;
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Payment";
+
+    decimal price = Model.Price;
+    decimal tax = price * 0.06m;
+    decimal totalPrice = price + tax;
+}
+
+<link rel="stylesheet" href="/css/Payment/payment.css" />
+
+<div class="payment-page">
+    <div class="payment-dc-container">
+        <h1 id="payment-dc-title">Payment</h1>
+        <h2 id="payment-dc-label">Make payment to confirm the appointment.</h2>
+        <div class="payment-description">
+
+            <div class="payment-description-row">
+                <p id="payment-description-label">Amount: </p>
+                <p id="payment-description-text">RM @price.ToString("0.00")</p>
+            </div>
+
+            <div class="payment-description-row">
+                <p id="payment-description-label">Tax:</p>
+                <p id="payment-description-text">6% SST</p>
+            </div>
+
+            <div class="payment-description-row">
+                <p id="payment-description-label">Discount: </p>
+                <p id="payment-description-text">None</p>
+            </div>
+
+            <div class="payment-description-row">
+                <p id="payment-description-label">Amount to Pay: </p>
+                <p id="payment-description-text">RM @totalPrice.ToString("0.00")</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="payment-container">
+        <h2 id="paymentdetails">Payment Details</h2>
+        <form asp-controller="Payment" asp-action="Make_Payment" class="payment-input" method="post" asp-route-bookingId="@Model.Id">
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="Price" />
+
+            <label for="cardname">Name on Card</label>
+            @Html.Input(placeholder: "Ali Maxim", id: "cardname", name: "paymentDetail.Name", type: "text", maxlength: "50")
+
+            <label for="cardnumber">Card Number</label>
+            @Html.Input(placeholder: "0000 0000 0000 0000", id: "cardnumber", type: "number", name: "paymentDetail.CardNumber", maxlength: "16")
+
+            <div class="expiry-securitycode">
+                <label for="cardexpiry">Expiry</label>
+                @Html.Input(placeholder: "MM/YY", id: "cardexpiry", type: "text", name: "paymentDetail.ExpiryDate")
+
+                <label for="securitycode">Secury Code</label>
+                @Html.Input(placeholder: "000", id: "securitycode", name: "paymentDetail.CVV", type: "number", maxlength: "3")
+            </div>
+
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <span class="text-danger">@ViewBag.ErrorMessage</span>
+            }
+            
+
+            @Html.Button("Continue", id: "payment-btn", type: "submit")
+        </form>
+
+    </div>
+</div>
+
+
+
+

@@ -1,38 +1,31 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
 
-    <link rel="shortcut icon" href="/images/icon-photo.png">
+    <link rel="shortcut icon" href="\images\title-icon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <!--CSS-->
     <link rel="stylesheet" href=@ViewBag.Css asp-append-version="true">
     <!--Import View file code to header -->
     @RenderSection("head", required: false)
-</head> 
+</head>
 <body>
-    <header>
-        <h1>@ViewBag.Title</h1>
-    </header>
-
     <main>
         @RenderBody()
     </main>
 
-    <footer>
-        Copyrighted &copy; @DateTime.Today.Year
-    </footer>
-   <!--Js Lib-->
+    <!--Js Lib-->
     <script src="~/jsLib/jquery.min.js"></script>
     <script src="~/jsLib/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/jsLib/jquery.validate.min.js"></script>
     <script src="~/jsLib/jquery.validate.unobtrusive.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--java script-->
     <script src="~/js/app.js" asp-append-version="true"></script>
     <!--Import View file code to foot example:js file -->
     @RenderSection("foot", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>     
+</html>

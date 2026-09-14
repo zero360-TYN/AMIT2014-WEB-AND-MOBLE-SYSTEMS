@@ -8,5 +8,5 @@ namespace Assignment.Controllers
         {
             return View();
         }
-    }
+    } 
 }

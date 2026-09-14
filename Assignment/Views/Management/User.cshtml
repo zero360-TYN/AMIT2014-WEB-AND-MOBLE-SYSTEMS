@@ -1,0 +1,99 @@
+﻿@using Assignment.Helpers
+@model List<UserVM>;
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "User Management";
+} 
+
+<link rel="stylesheet" href="/css/usermanagement.css" />
+
+<div class="user-management-page">
+    <div class="user-management-topcontainer">
+        <div class="roleFilter">
+            <select id="userRole" class="role">
+                <option value="">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="staff">Staff</option>
+                <option value="user">User</option>
+            </select>
+        </div>
+        <div class="user-management-search">
+            <form asp-controller="Management" asp-action="User" method="post">
+                @Html.Input(type: "search", placeholder: "Search", aspfor: "search", id: "searchUser")
+                @Html.Button("Go", type: "submit", id: "searchUser-btn")
+            </form>
+        </div>
+
+    </div>
+
+    <div class="user-management-tablecontainter">
+        <p id="user-management-userCount">Users： @Model.Count 
+            @if (!string.IsNullOrWhiteSpace(ViewBag.Search))
+            {
+                <span>(@ViewBag.Search)</span>
+            }
+        </p>
+        <div class="user-management-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Joined Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model)
+                    {
+                        <tr>
+                            <td>@detail.Email</td>
+                            <td>
+                                @switch (detail.accountDetail.RoleId)
+                                {
+                                    case 1:
+                                        @:Staff
+                                        break;
+                                    case 2:
+                                        @:User
+                                        break;
+                                    case 3:
+                                        @:Admin
+                                        break;
+                                    default:
+                                        @:Unknown
+                                        break;
+                                }
+                            </td>
+                            <td>@detail.accountDetail.Username</td>
+                            <td>@detail.accountDetail.CreatedAt</td>
+                            <td id="user-management-table-userStatus"><p id="user-management-table-statusLabel" class="@(detail.accountStatus.Status == AccountStatusType.blocked ? "blocked-status" : "active-status")">@detail.accountStatus.Status</p>
+                            </td>
+                            <td>
+                                @if (detail.accountStatus.Status == AccountStatusType.blocked)
+                                {
+                                    @Html.Button("Unblock", id: "user-management-block", onclick: $"userUnblock({detail.Id})")
+                                } else
+                                {
+                                    @Html.Button("Block", id: "user-management-block", onclick: $"userBlock({detail.Id})")
+                                }
+       
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+

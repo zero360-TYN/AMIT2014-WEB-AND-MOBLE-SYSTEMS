@@ -1,0 +1,310 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background: white;
+    margin: 0;
+}
+
+
+/* ============= MAKE PAYMENT INTERFACE =============*/
+
+.payment-page {
+    display: flex;
+    height: 85vh;
+    width: 100%;
+    align-items: center;
+}
+
+.payment-dc-container {
+    display: flex;
+    margin-left: 5%;
+    padding-left: 2%;
+    flex-direction: column;
+    margin-top: 150px;
+    width: 35%;
+    height: 85vh;
+}
+
+#payment-dc-title {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+#payment-dc-label {
+    font-size: 17px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.payment-description {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-description-row {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    border-radius: 10px;
+    align-items: center;
+    padding: 5px 10px;
+    justify-content: space-between;
+}
+
+#payment-description-label {
+    font-weight: 600;
+    margin: 0;
+}
+
+.payment-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 85vh;
+    width: 60%;
+    align-items: center;
+}
+
+#paymentdetails {
+    width: 630px;
+    align-self: center;
+    margin-bottom: 30px;
+}
+
+.payment-input {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.expiry-securitycode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+input {
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #808080;
+    outline: none;
+    padding: 0 14px;
+}
+
+#cardname, #cardnumber {
+    width: 600px;
+}
+
+#securitycode, #cardexpiry {
+    width: 186px;
+}
+
+#payment-btn {
+    width: 400px;
+    height: 40px;
+    border-radius: 15px;
+    background-color: #3d3d3d;
+    color: white;
+    cursor: pointer;
+    align-self: center;
+    margin-top: 50px;
+}
+
+
+/* ============= PRICING INTERFACE =============*/
+.pricing-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.pricing-description h1 {
+    margin-top: 12px;
+    margin-bottom: 10px;
+    font-size: 35px;
+}
+
+.pricing-description p {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.pricing-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.free-plan-container, .premium-plan-container, .platinum-plan-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1%;
+    width: 25%;
+    height: 450px;
+    border: 2px solid #c6c6c6;
+    border-radius: 15px;
+    padding: 20px;
+    outline-color: #cdcdcd;
+}
+
+.free-plan-container h2, .premium-plan-container h2, .platinum-plan-container h2 {
+    margin-bottom: 5px;
+}
+
+.free-plan-container h4, .premium-plan-container h4, .platinum-plan-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 30px;
+}
+
+.free-plan-container p, .premium-plan-container p, .platinum-plan-container p {
+    margin-top: 0;
+    margin-bottom: 15px;
+
+}
+
+.free-plan-container {
+    margin-left: 10%;
+}
+
+.platinum-plan-container {
+    margin-right: 10%;
+}
+
+#platinum-plan-btn, #free-plan-btn, #premium-plan-btn {
+    margin-top: auto;
+    background-color: white;
+    width: 200px;
+    height: 40px;
+    border-radius: 15px;
+    outline: 0;
+    border: 1px solid black;
+    align-self: center;
+    cursor: pointer;
+    font-weight: 600;
+
+    color: black;
+}
+
+#platinum-plan-btn:hover, #free-plan-btn:hover, #premium-plan-btn:hover {
+    background-color: black;
+    color: white;
+    font-weight: 600;
+}
+
+
+/* ============= PAYMENT VERIFICATION INTERFACE =============*/
+
+.payment-verification-page {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 50px;
+    border: 2px solid #ccc;
+    border-radius: 20px; 
+}
+
+.payment-verification-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 60px;
+}
+
+.payment-verification-container p {
+    margin-bottom: 5px;
+}
+
+.payment-verification-container h2 {
+    margin-top: 10px;
+    align-self: flex-end;
+    margin-right: 60px;
+}
+
+.payment-verification-title {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.payment-verification-title p {
+    margin-top: 10px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #b4b4b4;
+}
+
+.payment-verification-title h2 {
+    margin-top: 0px;
+}
+
+.payment-verification-status, .payment-verification-paymentId,
+.payment-verification-orderId, .payment-verification-type,
+.payment-verification-customerName, .payment-verification-amount,
+.payment-verification-paymentMethod, .payment-verification-paymentDate {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.payment-verification-title p {
+    margin-bottom: 0px;
+}
+
+.payment-verification-btn {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+#verification-approve-btn, #verification-cancel-btn {
+    width: 150px;  
+    height: 35px;
+    border-radius: 10px;
+    border: 2px solid #808080;
+    cursor: pointer;
+}
+
+#verification-cancel-btn {
+    background-color: white;
+    font-weight: bold;
+}
+
+#verification-approve-btn {
+    background-color: rgb(211 211 211);
+    font-weight: bold;
+}
+
+#verification-approve-btn:hover, #verification-cancel-btn:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+#payment-verification-paymentIdLabel, #payment-verification-orderIdLabel,
+#payment-verification-typeLabel, #payment-verification-customerNameLabel,
+#payment-verification-amountLabel, #payment-verification-paymentMethodLabel, 
+#payment-verification-paymentDateLabel, #payment-verification-statusLabel {
+    font-size: 15px;
+    font-weight: bold;
+    align-self: center;
+    margin-top: 5px;
+}
+
+#payment-verification-paymentId, #payment-verification-orderId,
+#payment-verification-type, #payment-verification-customerName,
+#payment-verification-amount, #payment-verification-paymentMethod,
+#payment-verification-paymentDate, #payment-verification-status {
+    font-size: 20px;
+}
+
+#payment-verification-status {
+    color: rgb(255 173 45);
+}
+
+.text-danger {
+    color: red;
+}

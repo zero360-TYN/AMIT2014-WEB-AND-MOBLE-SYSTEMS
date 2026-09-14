@@ -1,0 +1,41 @@
+﻿@using Assignment.Helpers;
+@model LoginVM;
+
+@{
+    Layout = "_AuthLayout";  
+    ViewBag.Title = "Login";
+}
+
+<link rel="stylesheet" href="/css/account.css" />
+
+<div class="login-page">
+    <div class ="login-container">
+        <h1>Login Your Account</h1>
+        <form asp-controller="Account" asp-action="Login" method="post" class="login-details">
+            <div class="login-input">
+                @Html.Input(type: "email", id: "login-email", maxlength: "30", placeholder: "Email Address", aspfor: "Email")
+                <span asp-validation-for="Email"></span>
+                @Html.Input(type: "password", id: "login-password", placeholder: "Password", aspfor: "Password")
+                <span asp-validation-for="Password"></span>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <span class="text-danger">@ViewBag.ErrorMessage</span>
+                }
+            </div>
+
+
+            @Html.Button("Login", type: "submit", id: "login-btn")
+            <a href="/Account/SignIn">
+                <button type="button" id="google-btn"><img src="/images/Account/google-logo.png" /></button>
+            </a>
+
+        </form>
+    </div>
+
+
+    <div class="login-description">
+        <h1>WELCOME TO <br />POKEMON THERAPY <br />CENTRA!</h1>
+        <p id="to-signup">Do you have an account? <a href="/Account/SignUp" class="signup-link">Sign Up</a></p>
+    </div>
+</div>
+

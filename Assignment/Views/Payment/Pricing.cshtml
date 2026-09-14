@@ -1,0 +1,46 @@
+﻿@using Assignment.Helpers;
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Pokemon Therapy Centra";
+}
+
+<link rel="stylesheet" href="/css/Payment/payment.css" />
+
+<div class="pricing-page">
+    <div class="pricing-description">
+        <h1>Pricing Plans</h1>
+        <p >Choose the perfect plan for your needs.</p>
+    </div>
+
+    <div class="pricing-container">
+        <div class="free-plan-container">
+            <h2>Free</h2>
+            <h4>MYR 0 /month</h4>
+            <p>✔ Access to basic features</p>
+            @Html.Button("Get Free Plan", id: "free-plan-btn", type: "submit")
+
+        </div>
+
+        <div class="premium-plan-container">
+            <h2>Premium</h2>
+            <h4>MYR 19.99 /month</h4>
+            <p>✔ 5% Discount per booking</p>
+            <p>✔ Free one time consultation per month</p>
+            <p>✔ Exclusive member events</p>
+            @Html.Button("Get Premium Plan", id: "premium-plan-btn", type: "submit")
+        </div>
+
+        <div class="platinum-plan-container">
+            <h2>Platinum</h2>
+            <h4>MYR 49.99 /month</h4>
+            <p>✔ 10% Discount per booking</p>
+            <p>✔ Free three time consultations per month</p>
+            <p>✔ Priority scheduling</p>
+            <p>✔ Exclusive member events</p>
+            <p>✔ Free gift cards</p>
+            @Html.Button("Get Platinum Plan", id: "platinum-plan-btn", type: "submit")
+        </div>
+    </div>
+</div>
+
